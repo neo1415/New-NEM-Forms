@@ -7,17 +7,16 @@ import {
 import { forwardRef, ReactElement, Ref } from "react";
 import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
-type AutocompleteOption<V extends string | number = number> = {
+type AutocompleteOption = {
   label: string;
-  value: V;
+  value: string | number;
 };
 
 type AutocompleteProps<
   T extends FieldValues,
-  V extends string | number,
   Multiple extends boolean = false
 > = Omit<
-  MuiAutocompleteProps<AutocompleteOption<V>, Multiple, false, false>,
+  MuiAutocompleteProps<AutocompleteOption, Multiple, false, false>,
   "renderInput" | "onChange" | "options" | "multiple"
 > & {
   name: Path<T>;
@@ -25,19 +24,15 @@ type AutocompleteProps<
     React.ComponentProps<typeof MuiTextField>,
     "name" | "error" | "helperText"
   >;
-  options: AutocompleteOption<V>[] | undefined;
+  options: AutocompleteOption[] | undefined;
   multiple?: Multiple;
   onOptionSelect?: Multiple extends true
-    ? (options: AutocompleteOption<V>[]) => void
-    : (option: AutocompleteOption<V> | null) => void;
+    ? (options: AutocompleteOption[]) => void
+    : (option: AutocompleteOption | null) => void;
 };
 
 const Autocomplete = forwardRef(
-  <
-    T extends FieldValues,
-    V extends string | number,
-    Multiple extends boolean = false
-  >(
+  <T extends FieldValues, Multiple extends boolean = false>(
     {
       name,
       options = [],
@@ -45,7 +40,7 @@ const Autocomplete = forwardRef(
       onOptionSelect,
       multiple = false as Multiple,
       ...autocompleteProps
-    }: AutocompleteProps<T, V, Multiple>,
+    }: AutocompleteProps<T, Multiple>,
     ref: Ref<HTMLInputElement>
   ) => {
     const { control } = useFormContext<T>();
@@ -59,7 +54,7 @@ const Autocomplete = forwardRef(
           fieldState: { error },
         }) => {
           const getValue = (): AutocompleteValue<
-            AutocompleteOption<V>,
+            AutocompleteOption,
             Multiple,
             false,
             false
@@ -68,7 +63,7 @@ const Autocomplete = forwardRef(
               return options.filter((option) =>
                 Array.isArray(value) ? value.includes(option.value) : false
               ) as AutocompleteValue<
-                AutocompleteOption<V>,
+                AutocompleteOption,
                 Multiple,
                 false,
                 false
@@ -76,7 +71,7 @@ const Autocomplete = forwardRef(
             }
             return (options.find((option) => option.value === value) ||
               null) as AutocompleteValue<
-              AutocompleteOption<V>,
+              AutocompleteOption,
               Multiple,
               false,
               false
@@ -84,7 +79,7 @@ const Autocomplete = forwardRef(
           };
 
           return (
-            <MuiAutocomplete<AutocompleteOption<V>, Multiple, false, false>
+            <MuiAutocomplete<AutocompleteOption, Multiple, false, false>
               {...autocompleteProps}
               {...field}
               multiple={multiple}
@@ -92,24 +87,22 @@ const Autocomplete = forwardRef(
               value={getValue()}
               onChange={(_, newValue) => {
                 if (multiple) {
-                  const values = (newValue as AutocompleteOption<V>[]).map(
+                  const values = (newValue as AutocompleteOption[]).map(
                     (option) => option.value
                   );
                   onChange(values);
                   if (onOptionSelect) {
-                    (
-                      onOptionSelect as (
-                        options: AutocompleteOption<V>[]
-                      ) => void
-                    )(newValue as AutocompleteOption<V>[]);
+                    (onOptionSelect as (options: AutocompleteOption[]) => void)(
+                      newValue as AutocompleteOption[]
+                    );
                   }
                 } else {
-                  const singleValue = newValue as AutocompleteOption<V> | null;
+                  const singleValue = newValue as AutocompleteOption | null;
                   onChange(singleValue?.value ?? "");
                   if (onOptionSelect) {
                     (
                       onOptionSelect as (
-                        option: AutocompleteOption<V> | null
+                        option: AutocompleteOption | null
                       ) => void
                     )(singleValue);
                   }
@@ -130,12 +123,8 @@ const Autocomplete = forwardRef(
       />
     );
   }
-) as <
-  T extends FieldValues,
-  V extends string | number,
-  Multiple extends boolean = false
->(
-  props: AutocompleteProps<T, V, Multiple> & { ref?: Ref<HTMLInputElement> }
+) as <T extends FieldValues, Multiple extends boolean = false>(
+  props: AutocompleteProps<T, Multiple> & { ref?: Ref<HTMLInputElement> }
 ) => ReactElement;
 
 export { Autocomplete, type AutocompleteOption };

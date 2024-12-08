@@ -1,3 +1,4 @@
+import { ErrorMessage } from "@/controllers/error-message";
 import { TextField } from "@/controllers/text-field";
 
 import { Schema } from "@/features/employee/history/types/schema";
@@ -73,6 +74,9 @@ const PreviousEmployers = () => {
           </Grid>
         </Grid>
       ))}
+      <Grid size={{ xs: 12 }}>
+        <ErrorMessage<Schema> name="previousEmployers" />
+      </Grid>
     </>
   );
 };

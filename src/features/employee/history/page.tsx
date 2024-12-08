@@ -2,12 +2,15 @@ import { Autocomplete } from "@/controllers/autocomplete";
 import { TextField } from "@/controllers/text-field";
 import { EducationalInstitutions } from "@/features/employee/history/components/educational-institutions";
 import { PreviousEmployers } from "@/features/employee/history/components/previous-employers";
+import {
+  useDegrees,
+  useEmploymentStatuses,
+  useReasonsForLeaving,
+} from "@/features/employee/history/hooks/useQueries";
 import { useStore } from "@/features/employee/history/hooks/useStore";
 import {
   defaultValues,
-  EmploymentStatusEnum,
-  HighestDegreeEnum,
-  ReasonsForLeavingEnum,
+  ReasonForLeavingEnum,
   schema,
   Schema,
 } from "@/features/employee/history/types/schema";
@@ -21,18 +24,30 @@ import {
   useFormContext,
   useWatch,
 } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 const Page = () => {
-  const { control, handleSubmit } = useFormContext<Schema>();
+  const { control, handleSubmit, reset } = useFormContext<Schema>();
   const { updateFormData } = useStore();
+  const navigate = useNavigate();
 
-  const currentEmploymentStatus = useWatch({
+  const employmentStatusesQuery = useEmploymentStatuses();
+  const reasonsForLeavingQuery = useReasonsForLeaving();
+  const degreesQuery = useDegrees();
+
+  const reasonsForLeavingPreviousJobs = useWatch({
     control,
-    name: "currentEmploymentStatus",
+    name: "reasonsForLeavingPreviousJobs",
   });
+
+  const handleResetFormClick = () => {
+    updateFormData(defaultValues);
+    reset(defaultValues);
+  };
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     updateFormData(data);
+    navigate("/skills");
   };
 
   return (
@@ -43,54 +58,44 @@ const Page = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <Grid size={{ xs: 12 }}>
+        <Button onClick={handleResetFormClick}>Reset</Button>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
         <Autocomplete<Schema>
           name="currentEmploymentStatus"
-          options={EmploymentStatusEnum.options.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          options={employmentStatusesQuery.data}
           textFieldProps={{ label: "Current Employment Status" }}
         />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
-        {currentEmploymentStatus === "other" && (
-          <TextField<Schema>
-            sx={{ width: 1 }}
-            name="otherEmploymentStatus"
-            label="Other Employment Status"
-          />
-        )}
-      </Grid>
       <Grid size={{ xs: 6 }}>
         <Autocomplete<Schema, true>
           name="reasonsForLeavingPreviousJobs"
-          options={ReasonsForLeavingEnum.options.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          options={reasonsForLeavingQuery.data}
           textFieldProps={{ label: "Current Employment Status" }}
           multiple={true}
         />
       </Grid>
 
       <Grid size={{ xs: 6 }}>
+        {reasonsForLeavingPreviousJobs.includes(
+          ReasonForLeavingEnum.enum.OTHER
+        ) && (
+          <TextField<Schema>
+            sx={{ width: 1 }}
+            name="otherReasonsForLeaving"
+            label="Other Reasons For Leaving"
+            multiline
+            maxRows={4}
+          />
+        )}
+      </Grid>
+
+      <Grid size={{ xs: 12 }}>
         <Autocomplete<Schema>
           name="highestDegreeObtained"
-          options={HighestDegreeEnum.options.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          options={degreesQuery.data}
           textFieldProps={{ label: "Highest Degree Obtained" }}
-        />
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <TextField<Schema>
-          sx={{ width: 1 }}
-          name="otherReasonsForLeaving"
-          label="Other Reasons For Leaving"
-          multiline
-          maxRows={4}
         />
       </Grid>
 
@@ -105,11 +110,14 @@ const Page = () => {
 };
 
 const Provider = () => {
+  const { formData } = useStore();
+
   const form = useForm<Schema>({
     mode: "all",
-    defaultValues,
     resolver: zodResolver(schema),
+    values: formData,
   });
+
   return (
     <FormProvider {...form}>
       <Page />

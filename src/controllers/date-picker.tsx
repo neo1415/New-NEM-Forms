@@ -23,22 +23,39 @@ const DatePicker = forwardRef(
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <MuiDatePicker
-            {...datePickerProps}
-            value={value}
-            onChange={onChange}
-            ref={ref}
-            slotProps={{
-              ...datePickerProps.slotProps,
-              textField: {
-                ...datePickerProps.slotProps?.textField,
-                error: !!error,
-                helperText: error?.message,
-              },
-            }}
-          />
-        )}
+        render={({ field: { onChange, value }, fieldState: { error } }) => {
+          const isValidDate = (val: unknown): val is Date => {
+            return val instanceof Date && !isNaN(val.getTime());
+          };
+
+          const dateValue = isValidDate(value)
+            ? value
+            : value
+            ? new Date(value as string)
+            : null;
+
+          return (
+            <MuiDatePicker
+              {...datePickerProps}
+              value={dateValue}
+              onChange={(newValue) => {
+                const finalValue = isValidDate(newValue)
+                  ? newValue.toISOString()
+                  : newValue;
+                onChange(finalValue);
+              }}
+              ref={ref}
+              slotProps={{
+                ...datePickerProps.slotProps,
+                textField: {
+                  ...datePickerProps.slotProps?.textField,
+                  error: !!error,
+                  helperText: error?.message,
+                },
+              }}
+            />
+          );
+        }}
       />
     );
   }

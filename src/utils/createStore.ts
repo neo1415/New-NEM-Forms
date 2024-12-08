@@ -9,10 +9,10 @@ type ConfigType = {
   skipPersist?: boolean;
 };
 
-export function createStore<T>(
+const createStore = <T>(
   storeCreator: StateCreator<T, [["zustand/immer", never]], []>,
   config?: ConfigType
-) {
+) => {
   const { name, storage, skipPersist = false } = config || {};
 
   const immerStore = immer(storeCreator);
@@ -27,4 +27,6 @@ export function createStore<T>(
       storage: createJSONStorage(() => storage || localStorage),
     })
   );
-}
+};
+
+export { createStore };

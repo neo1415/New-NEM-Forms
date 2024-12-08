@@ -3,12 +3,6 @@ import validator from "validator";
 
 const allowedFileTypes = z.enum(["application/pdf", "image/jpeg", "image/png"]);
 
-const skillSetSchema = z.object({
-  category: z.string().min(1),
-  yearsOfExperience: z.number().min(0).max(50),
-  details: z.array(z.string()).min(1),
-});
-
 const referencesSchema = z.object({
   name: z.string().min(1, { message: "Reference name is required." }),
   relationship: z.string().min(1, { message: "Relationship is required." }),
@@ -23,41 +17,6 @@ const referencesSchema = z.object({
 
 const schema = z
   .object({
-    // Page 2: Employment History and Education
-
-    // Page 3: Skills and Qualifications
-    coreCompetencies: z
-      .array(
-        z.enum([
-          "Project Management",
-          "Communication",
-          "Technical Skills",
-          "Leadership",
-          "Problem-Solving",
-          "other",
-        ])
-      )
-      .min(1, { message: "At least one core competency is required." }),
-    otherCoreCompetencies: z
-      .string()
-      .min(1, { message: "Please specify your core competencies." })
-      .optional(),
-    proficiencyLevels: z.object({
-      ProjectManagement: z.enum(["Beginner", "Intermediate", "Advanced"]),
-      Communication: z.enum(["Beginner", "Intermediate", "Advanced"]),
-      TechnicalSkills: z.enum(["Beginner", "Intermediate", "Advanced"]),
-      Leadership: z.enum(["Beginner", "Intermediate", "Advanced"]),
-      ProblemSolving: z.enum(["Beginner", "Intermediate", "Advanced"]),
-      other: z.enum(["Beginner", "Intermediate", "Advanced"]).optional(),
-    }),
-    skillSets: z
-      .array(skillSetSchema)
-      .min(1, "At least one skill set is required")
-      .max(5, "Maximum 5 skill sets allowed"),
-    languagesSpoken: z
-      .array(z.string().min(1, { message: "Language cannot be empty." }))
-      .min(1, { message: "At least one language is required." }),
-
     // Page 4: References and Additional Information
     references: z
       .array(z.lazy(() => referencesSchema))
