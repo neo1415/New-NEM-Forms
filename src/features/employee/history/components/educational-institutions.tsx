@@ -1,3 +1,4 @@
+import { DatePicker } from "@/controllers/date-picker";
 import { TextField } from "@/controllers/text-field";
 
 import { Schema } from "@/features/employee/history/types/schema";
@@ -7,16 +8,21 @@ import { IconButton, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
-const PreviousEmployers = () => {
+const EducationalInstitutions = () => {
   const { control } = useFormContext<Schema>();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "previousEmployers",
+    name: "educationalInstitutions",
   });
 
   const handleAddClick = () => {
-    append({ jobTitle: "", name: "", responsibilities: "" });
+    append({
+      degree: "",
+      fieldOfStudy: "",
+      graduationYear: new Date(),
+      institutionName: "",
+    });
   };
 
   const handleRemoveClick = (index: number) => {
@@ -25,8 +31,8 @@ const PreviousEmployers = () => {
 
   return (
     <>
-      <Grid sx={{ display: "flex", alignItems: "center" }} size={12}>
-        <Typography>Previous Employers:</Typography>
+      <Grid sx={{ display: "flex", alignItems: "center" }} size={{ xs: 12 }}>
+        <Typography>Educational Institutions:</Typography>
         <IconButton onClick={handleAddClick} color="success">
           <AddCircleRoundedIcon />
         </IconButton>
@@ -34,29 +40,33 @@ const PreviousEmployers = () => {
       {fields.map((field, index) => (
         <Grid spacing={2} container size={{ xs: 12 }} key={field.id}>
           <Grid size={{ xs: 12 }}>
-            <Typography>{`Employer ${index + 1}:`}</Typography>
+            <Typography>{`Institution ${index + 1}:`}</Typography>
           </Grid>
           <Grid size={{ xs: 3 }}>
             <TextField<Schema>
               sx={{ width: 1 }}
-              name={`previousEmployers.${index}.name`}
-              label="Name"
+              name={`educationalInstitutions.${index}.degree`}
+              label="Degree"
             />
           </Grid>
-          <Grid size={{ xs: 4 }}>
+          <Grid size={{ xs: 3 }}>
             <TextField<Schema>
               sx={{ width: 1 }}
-              name={`previousEmployers.${index}.jobTitle`}
+              name={`educationalInstitutions.${index}.fieldOfStudy`}
               label="Job Title"
             />
           </Grid>
-          <Grid size={{ xs: 4 }}>
+          <Grid size={{ xs: 3 }}>
             <TextField<Schema>
               sx={{ width: 1 }}
-              name={`previousEmployers.${index}.responsibilities`}
-              label="Responsibilities"
-              multiline
-              maxRows={4}
+              name={`educationalInstitutions.${index}.institutionName`}
+              label="Field of Study"
+            />
+          </Grid>
+          <Grid size={{ xs: 2 }}>
+            <DatePicker<Schema>
+              sx={{ width: 1 }}
+              name={`educationalInstitutions.${index}.graduationYear`}
             />
           </Grid>
           <Grid
@@ -77,4 +87,4 @@ const PreviousEmployers = () => {
   );
 };
 
-export { PreviousEmployers };
+export { EducationalInstitutions };

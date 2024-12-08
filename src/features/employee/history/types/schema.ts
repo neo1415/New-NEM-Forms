@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+enum EmploymentStatus {
+  Apple,
+  Banana,
+}
+find best way to create enums
+
 const EmploymentStatusEnum = z.enum([
   "employedFullTime",
   "employedHalfTime",
@@ -23,8 +29,6 @@ const HighestDegreeEnum = z.enum([
   "doctorate",
 ]);
 
-const CertificationsEnum = z.enum(["cpa", "pmp", "it", "other"]);
-
 const previousEmployerSchema = z.object({
   name: z.string().min(1, { message: "Employer name is required." }),
   jobTitle: z.string().min(1, { message: "Job title is required." }),
@@ -40,11 +44,7 @@ const educationalInstitutionsSchema = z.object({
   degree: z.string().min(1, { message: "Degree is required." }),
   fieldOfStudy: z.string().min(1, { message: "Field of study is required." }),
   graduationYear: z
-    .preprocess((arg) => {
-      if (typeof arg === "string" || arg instanceof Date) {
-        return new Date(arg);
-      }
-    }, z.date())
+    .date()
     .refine(
       (date) =>
         date.getFullYear() >= 1900 &&
@@ -71,29 +71,20 @@ const schema = z.object({
     .min(1, { message: "Please specify your reason for leaving." })
     .optional(),
   highestDegreeObtained: HighestDegreeEnum,
-  {add from hereeeeeee to history page}
+
   educationalInstitutions: z
-    .array(z.lazy(() => educationalInstitutionsSchema))
+    .array(educationalInstitutionsSchema)
     .min(1, { message: "At least one educational institution is required." }),
-  certificationsAndLicenses: z.array(CertificationsEnum).min(1, {
-    message: "At least one certification or license is required.",
-  }),
-  otherCertificationsAndLicenses: z
-    .string()
-    .min(1, { message: "Please specify your certifications or licenses." })
-    .optional(),
 });
 
 type Schema = z.infer<typeof schema>;
 
 const defaultValues: Schema = {
   currentEmploymentStatus: "unemployed",
-  certificationsAndLicenses: [],
   educationalInstitutions: [],
   highestDegreeObtained: "associateDegree",
   previousEmployers: [],
   reasonsForLeavingPreviousJobs: [],
-  otherCertificationsAndLicenses: "",
   otherEmploymentStatus: "",
   otherReasonsForLeaving: "",
 };

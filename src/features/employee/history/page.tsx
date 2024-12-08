@@ -1,5 +1,6 @@
 import { Autocomplete } from "@/controllers/autocomplete";
 import { TextField } from "@/controllers/text-field";
+import { EducationalInstitutions } from "@/features/employee/history/components/educational-institutions";
 import { PreviousEmployers } from "@/features/employee/history/components/previous-employers";
 import { useStore } from "@/features/employee/history/hooks/useStore";
 import {
@@ -61,16 +62,28 @@ const Page = () => {
           />
         )}
       </Grid>
+      <Grid size={{ xs: 6 }}>
+        <Autocomplete<Schema, true>
+          name="reasonsForLeavingPreviousJobs"
+          options={ReasonsForLeavingEnum.options.map((item) => ({
+            label: item,
+            value: item,
+          }))}
+          textFieldProps={{ label: "Current Employment Status" }}
+          multiple={true}
+        />
+      </Grid>
 
-      <PreviousEmployers />
-      <Autocomplete<Schema>
-        name="reasonsForLeavingPreviousJobs"
-        options={ReasonsForLeavingEnum.options.map((item) => ({
-          label: item,
-          value: item,
-        }))}
-        textFieldProps={{ label: "Current Employment Status" }}
-      />
+      <Grid size={{ xs: 6 }}>
+        <Autocomplete<Schema>
+          name="highestDegreeObtained"
+          options={HighestDegreeEnum.options.map((item) => ({
+            label: item,
+            value: item,
+          }))}
+          textFieldProps={{ label: "Highest Degree Obtained" }}
+        />
+      </Grid>
       <Grid size={{ xs: 12 }}>
         <TextField<Schema>
           sx={{ width: 1 }}
@@ -81,16 +94,8 @@ const Page = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
-        <Autocomplete<Schema>
-          name="highestDegreeObtained"
-          options={HighestDegreeEnum.options.map((item) => ({
-            label: item,
-            value: item,
-          }))}
-          textFieldProps={{ label: "Current Employment Status" }}
-        />
-      </Grid>
+      <PreviousEmployers />
+      <EducationalInstitutions />
 
       <Button type="submit" variant="contained">
         Next Step

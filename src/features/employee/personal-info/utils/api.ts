@@ -55,7 +55,7 @@ const states = [
 ];
 
 async function getStates(): Promise<AutocompleteOption[]> {
-  await wait(1000);
+  await wait();
   return states.map((item) => ({
     label: item.label,
     value: item.value,
@@ -63,7 +63,7 @@ async function getStates(): Promise<AutocompleteOption[]> {
 }
 
 async function getCities(state: string): Promise<AutocompleteOption[]> {
-  await wait(1000);
+  await wait();
 
   return (
     states
