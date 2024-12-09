@@ -30,15 +30,9 @@ const schema = z.object({
         message: "Invalid mobile phone number.",
       }
     ),
-  dateOfBirth: z
-    .preprocess((arg) => {
-      if (typeof arg === "string" || arg instanceof Date) {
-        return new Date(arg);
-      }
-    }, z.date())
-    .refine((date) => date <= new Date(), {
-      message: "Date of birth cannot be in the future.",
-    }),
+  dateOfBirth: z.coerce.date().refine((date) => date <= new Date(), {
+    message: "Date of birth cannot be in the future.",
+  }),
   state: z.string().min(1, { message: "State is required." }),
   city: z.string().min(1, { message: "City is required." }),
   streetAddress: z.string().min(1, { message: "Street address is required." }),

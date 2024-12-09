@@ -4,74 +4,31 @@ import validator from "validator";
 const allowedFileTypes = z.enum(["application/pdf", "image/jpeg", "image/png"]);
 
 const referencesSchema = z.object({
-  name: z.string().min(1, { message: "Reference name is required." }),
-  relationship: z.string().min(1, { message: "Relationship is required." }),
-  company: z.string().min(1, { message: "Company name is required." }),
+  name: z.string().min(1),
+  relationship: z.string().min(1),
   contactInformation: z
     .string()
-    .min(1, { message: "Contact information is required." })
-    .refine((val) => validator.isEmail(val) || validator.isMobilePhone(val), {
-      message: "Contact information must be a valid email or phone number.",
-    }),
+    .min(1)
+    .refine((val) => validator.isEmail(val) || validator.isMobilePhone(val)),
 });
 
 const schema = z
   .object({
-    // Page 4: References and Additional Information
-    references: z
-      .array(z.lazy(() => referencesSchema))
-      .length(3, { message: "Exactly three references are required." }),
+    references: z.array(referencesSchema).length(3),
     portfolioFiles: z
-      .array(z.any())
-      .refine(
-        (files) =>
-          files.every((file) => allowedFileTypes.safeParse(file.type).success),
-        {
-          message: "Files must be PDF or images (JPEG/PNG).",
-        }
+      .array(z.custom<File>())
+      .refine((files) =>
+        files.every((file) => allowedFileTypes.safeParse(file.type).success)
       )
-      .refine((files) => files.length <= 3, {
-        message: "Maximum 3 files allowed.",
-      })
-      .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024), {
-        message: "Each file must be less than 5MB.",
-      }),
+      .refine((files) => files.length <= 3)
+      .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024)),
     resumeFile: z
-      .any()
-      .refine((files) => files?.[0]?.type === "application/pdf", {
-        message: "Resume must be a PDF.",
-      })
-      .refine((files) => files?.[0]?.size <= 5 * 1024 * 1024, {
-        message: "Resume must be less than 5MB.",
-      }),
-    coverLetter: z
-      .any()
-      .optional()
-      .refine((files) => !files || files?.[0]?.type === "application/pdf", {
-        message: "Cover letter must be a PDF.",
-      })
-      .refine((files) => !files || files?.[0]?.size <= 5 * 1024 * 1024, {
-        message: "Cover letter must be less than 5MB.",
-      }),
-    portfolioLink: z
-      .string()
-      .url({ message: "Portfolio link must be a valid URL." })
-      .optional(),
-    availabilityToStart: z
-      .preprocess((arg) => {
-        if (typeof arg === "string" || arg instanceof Date) {
-          return new Date(arg);
-        }
-      }, z.date())
-      .refine((date) => date >= new Date(), {
-        message: "Availability to start cannot be in the past.",
-      }),
-    salaryExpectations: z
-      .number({ invalid_type_error: "Salary expectations must be a number." })
-      .min(30000, { message: "Salary expectations must be at least $30,000." })
-      .max(1000000, {
-        message: "Salary expectations must be less than $1,000,000.",
-      }),
+      .custom<File>()
+      .refine((file) => file.type === "application/pdf")
+      .refine((file) => file.size <= 5 * 1024 * 1024),
+    portfolioLink: z.string().url().optional(),
+    availabilityToStart: z.coerce.date().refine((date) => date >= new Date()),
+    salaryExpectations: z.number().min(30000).max(1000000),
 
     // Page 5: Review and Submit
     termsAndConditionsAccepted: z.boolean().refine((val) => val === true, {
