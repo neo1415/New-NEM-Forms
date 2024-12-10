@@ -17,7 +17,7 @@ type SkillSetProps = {
   fieldRemove: UseFieldArrayRemove;
 };
 const SkillSet = ({ fieldIndex, fieldRemove }: SkillSetProps) => {
-  const { control } = useFormContext<Schema>();
+  const { control, setValue } = useFormContext<Schema>();
 
   const category = useWatch({
     control,
@@ -36,6 +36,15 @@ const SkillSet = ({ fieldIndex, fieldRemove }: SkillSetProps) => {
     fieldRemove(fieldIndex);
   };
 
+  const handleCategoryChange = () => {
+    setValue(`skillSets.${fieldIndex}.subcategory`, "");
+    setValue(`skillSets.${fieldIndex}.skills`, []);
+  };
+
+  const handleSubcategoryChange = () => {
+    setValue(`skillSets.${fieldIndex}.skills`, []);
+  };
+
   return (
     <Grid spacing={2} container size={{ xs: 12 }}>
       <Grid size={{ xs: 12 }}>
@@ -47,6 +56,7 @@ const SkillSet = ({ fieldIndex, fieldRemove }: SkillSetProps) => {
             name={`skillSets.${fieldIndex}.category`}
             options={skillCategoriesQuery.data}
             textFieldProps={{ label: "Category" }}
+            onOptionSelect={handleCategoryChange}
           />
         </Grid>
         <Grid size={{ xs: 4 }}>
@@ -54,6 +64,7 @@ const SkillSet = ({ fieldIndex, fieldRemove }: SkillSetProps) => {
             name={`skillSets.${fieldIndex}.subcategory`}
             options={skillSubcategoriesQuery.data}
             textFieldProps={{ label: "Sub Category" }}
+            onOptionSelect={handleSubcategoryChange}
           />
         </Grid>
         <Grid size={{ xs: 4 }}>

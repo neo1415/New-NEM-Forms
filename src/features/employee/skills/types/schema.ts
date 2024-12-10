@@ -7,13 +7,13 @@ const skillSetSchema = z.object({
   category: z.string().min(1),
   subcategory: z.string().min(1),
   skills: z.array(z.string()).min(1),
-  yearsOfExperience: z.number().min(0).max(50),
+  yearsOfExperience: z.coerce.number().min(0).max(50),
   description: z.string(),
 });
 const schema = z
   .object({
     coreCompetencies: z.array(CoreCompetencyEnum).min(1),
-    otherCoreCompetencies: z.string().min(1).optional(),
+    otherCoreCompetencies: z.string().optional(),
     proficiencyLevels: z.object({
       projectManagement: z.string().min(1),
       communication: z.string().min(1),
@@ -54,4 +54,10 @@ const defaultValues: Schema = {
   otherCoreCompetencies: "",
 };
 
-export { defaultValues, schema, type Schema, CoreCompetencyEnum };
+export {
+  defaultValues,
+  schema,
+  schema as skillsSchema,
+  type Schema,
+  CoreCompetencyEnum,
+};

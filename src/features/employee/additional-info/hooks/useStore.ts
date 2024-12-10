@@ -1,7 +1,7 @@
 import {
   defaultValues,
   Schema,
-} from "@/features/employee/history/types/schema";
+} from "@/features/employee/additional-info/types/schema";
 import { createStore } from "@/utils/createStore";
 
 type State = {
@@ -23,8 +23,8 @@ const useStore = createStore<Store>(
       }),
   }),
   {
-    name: "employee-history-store",
+    name: "employee-additional-info-store",
   }
 );
 
-export { useStore, useStore as useEmployeeHistoryStore };
+export { useStore, useStore as useEmployeeAdditionalInfoStore };

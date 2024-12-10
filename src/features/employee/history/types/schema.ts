@@ -57,4 +57,10 @@ const defaultValues: Schema = {
   otherReasonsForLeaving: "",
 };
 
-export { defaultValues, ReasonForLeavingEnum, schema, type Schema };
+export {
+  defaultValues,
+  ReasonForLeavingEnum,
+  schema,
+  schema as historySchema,
+  type Schema,
+};

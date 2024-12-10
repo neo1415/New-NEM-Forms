@@ -13,7 +13,6 @@ import {
   schema,
   Schema,
 } from "@/features/employee/skills/types/schema";
-import { useFormLogger } from "@/hooks/useFormLogger";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -24,10 +23,12 @@ import {
   useFormContext,
   useWatch,
 } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 const Page = () => {
   const { control, handleSubmit, reset } = useFormContext<Schema>();
   const { updateFormData } = useStore();
+  const navigate = useNavigate();
 
   const coreCompetenciesQuery = useCoreCompetencies();
   const languagesQuery = useLanguages();
@@ -44,9 +45,8 @@ const Page = () => {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     updateFormData(data);
+    navigate("/additional-info");
   };
-
-  useFormLogger();
 
   return (
     <Grid

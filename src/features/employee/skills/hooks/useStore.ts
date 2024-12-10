@@ -24,4 +24,4 @@ const useStore = createStore<Store>(
   }
 );
 
-export { useStore };
+export { useStore, useStore as useEmployeeSkillsStore };

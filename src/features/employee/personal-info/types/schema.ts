@@ -56,4 +56,4 @@ const defaultValues: Schema = {
   socialSecurityNumber: "",
 };
 
-export { schema, type Schema, defaultValues };
+export { schema, schema as personalInfoSchema, type Schema, defaultValues };
