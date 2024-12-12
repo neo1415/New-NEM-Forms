@@ -68,8 +68,6 @@ const SummaryDialog = () => {
         <EmployeeAdditionalInfo />
         <EmployeeReview />
       </DialogContent>
-      {fix social security and other number formats
-      make final dialog responvie and better}
       <DialogActions>
         <LoadingButton type="submit" loading={createMutation.isPending}>
           Submit

@@ -1,3 +1,4 @@
+import { FormErrorSummary } from "@/components/form-error-summary";
 import { Autocomplete, AutocompleteOption } from "@/controllers/autocomplete";
 import { DatePicker } from "@/controllers/date-picker";
 import { TextField } from "@/controllers/text-field";
@@ -11,8 +12,12 @@ import {
   schema,
   Schema,
 } from "@/features/employee/personal-info/types/schema";
+import { calculateMinAge } from "@/utils/calculateMinAge";
+import { d } from "@/utils/dictionary";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Stack } from "@mui/material";
+import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
+import { Button, IconButton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import {
   FormProvider,
   SubmitHandler,
@@ -50,37 +55,83 @@ const Page = () => {
   };
 
   return (
-    <Stack sx={{ gap: 2 }} component="form" onSubmit={handleSubmit(onSubmit)}>
-      <Button onClick={handleResetFormClick}>Reset</Button>
-      <TextField<Schema> name="firstName" label="First Name" />
-      <TextField<Schema> name="lastName" label="Last Name" />
-      <TextField<Schema> name="email" label="Email" />
-      <TextField<Schema> name="phoneNumber" label="Phone Number" />
-      <DatePicker<Schema> name="dateOfBirth" label="Date of Birth" />
-      <Autocomplete<Schema>
-        name="state"
-        options={statesQuery.data}
-        loading={statesQuery.isLoading}
-        textFieldProps={{ label: "State" }}
-        onOptionSelect={handleOptionSelect}
-      />
-      <Autocomplete<Schema>
-        name="city"
-        options={citiesQuery.data}
-        loading={citiesQuery.isLoading}
-        textFieldProps={{ label: "City" }}
-        disabled={!state}
-      />
-      <TextField<Schema> name="streetAddress" label="Street Address" />
-      <TextField<Schema>
-        name="socialSecurityNumber"
-        label="Social Security Number"
-        format="socialSecurity"
-      />
-      <Button type="submit" variant="contained">
-        Next Step
-      </Button>
-    </Stack>
+    <Grid
+      container
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      spacing={2}
+    >
+      <Grid size={{ xs: 12 }}>
+        <IconButton onClick={handleResetFormClick} color="secondary">
+          <RestartAltOutlinedIcon />
+        </IconButton>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <FormErrorSummary />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        <TextField<Schema> name="firstName" label={d.firstName} />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        <TextField<Schema> name="lastName" label={d.lastName} />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        <DatePicker<Schema>
+          name="dateOfBirth"
+          label={d.dateOfBirth}
+          maxDate={calculateMinAge()}
+          minDate={new Date("1900-01-01")}
+        />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        <TextField<Schema> name="email" label={d.email} />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        <TextField<Schema> name="phoneNumber" label={d.phoneNumber} />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        <TextField<Schema>
+          name="socialSecurityNumber"
+          label={d.socialSecurityNumber}
+          format="socialSecurity"
+          slotProps={{
+            inputLabel: { shrink: true },
+          }}
+        />
+      </Grid>
+      <Grid size={{ xs: 6 }}>
+        <Autocomplete<Schema>
+          name="state"
+          options={statesQuery.data}
+          loading={statesQuery.isLoading}
+          textFieldProps={{ label: d.state }}
+          onOptionSelect={handleOptionSelect}
+        />
+      </Grid>
+      <Grid size={{ xs: 6 }}>
+        {!!state && (
+          <Autocomplete<Schema>
+            name="city"
+            options={citiesQuery.data}
+            loading={citiesQuery.isLoading}
+            textFieldProps={{ label: d.city }}
+          />
+        )}
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <TextField<Schema>
+          name="streetAddress"
+          label={d.streetAddress}
+          multiline
+          maxRows={4}
+        />
+      </Grid>
+      <Grid offset="auto">
+        <Button type="submit" variant="contained">
+          {d.nextStep}
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

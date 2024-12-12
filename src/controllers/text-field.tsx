@@ -1,7 +1,9 @@
 import {
+  InputBaseComponentProps,
   TextField as MuiTextField,
   TextFieldProps as MuiTextFieldProps,
-  InputBaseComponentProps,
+  SxProps,
+  Theme,
 } from "@mui/material";
 import { forwardRef, ReactElement, Ref } from "react";
 import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
@@ -83,13 +85,18 @@ const formatComponents = {
 
 const TextField = forwardRef(
   <T extends FieldValues>(
-    { name, format, ...textFieldProps }: TextFieldProps<T>,
+    { name, format, sx, ...textFieldProps }: TextFieldProps<T>,
     ref: Ref<HTMLInputElement>
   ) => {
     const { control } = useFormContext<T>();
 
     const getInputComponent = (format?: FormatType) => {
       return format ? formatComponents[format] : undefined;
+    };
+
+    const defaultSx: SxProps<Theme> = {
+      width: 1,
+      ...sx,
     };
 
     return (
@@ -103,7 +110,9 @@ const TextField = forwardRef(
             inputRef={ref}
             error={!!error}
             helperText={error?.message}
+            sx={defaultSx}
             slotProps={{
+              ...textFieldProps.slotProps,
               input: {
                 ...textFieldProps.slotProps?.input,
                 inputComponent: getInputComponent(format),

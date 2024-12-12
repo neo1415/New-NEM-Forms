@@ -1,3 +1,4 @@
+import { SxProps, Theme } from "@mui/material";
 import {
   DatePicker as MuiDatePicker,
   DatePickerProps as MuiDatePickerProps,
@@ -14,10 +15,15 @@ type DatePickerProps<T extends FieldValues> = Omit<
 
 const DatePicker = forwardRef(
   <T extends FieldValues>(
-    { name, ...datePickerProps }: DatePickerProps<T>,
+    { name, sx, ...datePickerProps }: DatePickerProps<T>,
     ref: Ref<HTMLDivElement>
   ) => {
     const { control } = useFormContext<T>();
+
+    const defaultSx: SxProps<Theme> = {
+      width: 1,
+      ...sx,
+    };
 
     return (
       <Controller
@@ -45,6 +51,7 @@ const DatePicker = forwardRef(
                 onChange(finalValue);
               }}
               ref={ref}
+              sx={defaultSx}
               slotProps={{
                 ...datePickerProps.slotProps,
                 textField: {
