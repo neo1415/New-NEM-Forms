@@ -1,3 +1,4 @@
+import { SummaryDialog } from "@/features/employee/wrapper/components/summary-dialog";
 import { Box, Container, Paper } from "@mui/material";
 import { Outlet } from "react-router";
 
@@ -18,6 +19,7 @@ const Page = () => {
         component={Paper}
         maxWidth="lg"
       >
+        <SummaryDialog />
         <Outlet />
       </Container>
     </Box>

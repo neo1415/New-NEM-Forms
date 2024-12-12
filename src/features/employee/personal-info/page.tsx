@@ -75,6 +75,7 @@ const Page = () => {
       <TextField<Schema>
         name="socialSecurityNumber"
         label="Social Security Number"
+        format="socialSecurity"
       />
       <Button type="submit" variant="contained">
         Next Step

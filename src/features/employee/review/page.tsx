@@ -1,16 +1,12 @@
 import { Checkbox } from "@/controllers/checkbox";
 import { Dropzone } from "@/controllers/dropzone";
-import { useEmployeeAdditionalInfoStore } from "@/features/employee/additional-info/hooks/useStore";
-import { useEmployeeHistoryStore } from "@/features/employee/history/hooks/useStore";
-import { useEmployeePersonalInfoStore } from "@/features/employee/personal-info/hooks/useStore";
-import { SummaryDialog } from "@/features/employee/review/components/summary-dialog";
+import { useStore } from "@/features/employee/review/hooks/useStore";
 import {
   defaultValues,
   schema,
   Schema,
 } from "@/features/employee/review/types/schema";
-import { useEmployeeSkillsStore } from "@/features/employee/skills/hooks/useStore";
-import { employeeWrapperSchema } from "@/features/employee/wrapper/types/schema";
+import { useEmployeeWrapperStore } from "@/features/employee/wrapper/hooks/useStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -20,33 +16,19 @@ import {
   useForm,
   useFormContext,
 } from "react-hook-form";
-import { useNavigate } from "react-router";
 
 const Page = () => {
-  const { handleSubmit, reset, getValues } = useFormContext<Schema>();
-  const navigate = useNavigate();
+  const { handleSubmit, reset } = useFormContext<Schema>();
 
+  const { updateFormData } = useStore();
+  const { updateSummaryDialogOpen } = useEmployeeWrapperStore();
   const handleResetFormClick = () => {
     reset(defaultValues);
   };
 
-  const { formData: employeeAdditionalInfoFormData } =
-    useEmployeeAdditionalInfoStore();
-  const { formData: employeeHistoryFormData } = useEmployeeHistoryStore();
-  const { formData: employeePersonalInfoFormData } =
-    useEmployeePersonalInfoStore();
-  const { formData: employeeSkillsFormData } = useEmployeeSkillsStore();
-
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    navigate("/");
-
-    employeeWrapperSchema.parse({
-      ...getValues(),
-      ...employeeAdditionalInfoFormData,
-      ...employeeHistoryFormData,
-      ...employeePersonalInfoFormData,
-      ...employeeSkillsFormData,
-    });
+    updateFormData(data);
+    updateSummaryDialogOpen(true);
   };
 
   return (
@@ -110,7 +92,6 @@ const Provider = () => {
 
   return (
     <FormProvider {...form}>
-      <SummaryDialog />
       <Page />
     </FormProvider>
   );
