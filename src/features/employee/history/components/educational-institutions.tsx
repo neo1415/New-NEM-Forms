@@ -3,6 +3,7 @@ import { ErrorMessage } from "@/controllers/error-message";
 import { TextField } from "@/controllers/text-field";
 
 import { Schema } from "@/features/employee/history/types/schema";
+import { d } from "@/utils/dictionary";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import { IconButton, Typography } from "@mui/material";
@@ -33,7 +34,7 @@ const EducationalInstitutions = () => {
   return (
     <>
       <Grid sx={{ display: "flex", alignItems: "center" }} size={{ xs: 12 }}>
-        <Typography>Educational Institutions:</Typography>
+        <Typography>{d.educationalInstitutions}:</Typography>
         <IconButton onClick={handleAddClick} color="success">
           <AddCircleRoundedIcon />
         </IconButton>
@@ -41,27 +42,27 @@ const EducationalInstitutions = () => {
       {fields.map((field, index) => (
         <Grid spacing={2} container size={{ xs: 12 }} key={field.id}>
           <Grid size={{ xs: 12 }}>
-            <Typography>{`Institution ${index + 1}:`}</Typography>
+            <Typography>{`${d.institution} ${index + 1}:`}</Typography>
           </Grid>
           <Grid size={{ xs: 3 }}>
             <TextField<Schema>
               sx={{ width: 1 }}
               name={`educationalInstitutions.${index}.degree`}
-              label="Degree"
+              label={d.degree}
             />
           </Grid>
           <Grid size={{ xs: 3 }}>
             <TextField<Schema>
               sx={{ width: 1 }}
               name={`educationalInstitutions.${index}.fieldOfStudy`}
-              label="Job Title"
+              label={d.fieldOfStudy}
             />
           </Grid>
           <Grid size={{ xs: 3 }}>
             <TextField<Schema>
               sx={{ width: 1 }}
               name={`educationalInstitutions.${index}.institutionName`}
-              label="Field of Study"
+              label={d.institutionName}
             />
           </Grid>
           <Grid size={{ xs: 2 }}>

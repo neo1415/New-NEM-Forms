@@ -12,7 +12,7 @@ import {
   schema,
   Schema,
 } from "@/features/employee/personal-info/types/schema";
-import { calculateMinAge } from "@/utils/calculateMinAge";
+import { calculatePastDate } from "@/utils/calculatePastDate";
 import { d } from "@/utils/dictionary";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
@@ -28,15 +28,15 @@ import {
 import { useNavigate } from "react-router";
 
 const Page = () => {
-  const { control, setValue, handleSubmit, reset } = useFormContext<Schema>();
-  const { updateFormData } = useStore();
-
   const navigate = useNavigate();
 
-  const state = useWatch({ control, name: "state" });
+  const { updateFormData } = useStore();
 
   const statesQuery = useStates();
   const citiesQuery = useCities();
+
+  const { control, setValue, handleSubmit, reset } = useFormContext<Schema>();
+  const state = useWatch({ control, name: "state" });
 
   const handleOptionSelect = (option: AutocompleteOption | null) => {
     if (!option) {
@@ -57,9 +57,9 @@ const Page = () => {
   return (
     <Grid
       container
+      spacing={2}
       component="form"
       onSubmit={handleSubmit(onSubmit)}
-      spacing={2}
     >
       <Grid size={{ xs: 12 }}>
         <IconButton onClick={handleResetFormClick} color="secondary">
@@ -79,24 +79,25 @@ const Page = () => {
         <DatePicker<Schema>
           name="dateOfBirth"
           label={d.dateOfBirth}
-          maxDate={calculateMinAge()}
-          minDate={new Date("1900-01-01")}
+          maxDate={calculatePastDate(18)}
+          minDate={calculatePastDate(100)}
         />
       </Grid>
       <Grid size={{ xs: 4 }}>
         <TextField<Schema> name="email" label={d.email} />
       </Grid>
       <Grid size={{ xs: 4 }}>
-        <TextField<Schema> name="phoneNumber" label={d.phoneNumber} />
+        <TextField<Schema>
+          name="phoneNumber"
+          label={d.phoneNumber}
+          format="phoneNumber"
+        />
       </Grid>
       <Grid size={{ xs: 4 }}>
         <TextField<Schema>
           name="socialSecurityNumber"
           label={d.socialSecurityNumber}
           format="socialSecurity"
-          slotProps={{
-            inputLabel: { shrink: true },
-          }}
         />
       </Grid>
       <Grid size={{ xs: 6 }}>

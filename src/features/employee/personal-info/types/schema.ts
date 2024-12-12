@@ -1,4 +1,5 @@
-import { calculateMinAge } from "@/utils/calculateMinAge";
+import { calculatePastDate } from "@/utils/calculatePastDate";
+import { regex } from "@/utils/regex";
 import validator from "validator";
 import { z } from "zod";
 
@@ -9,24 +10,22 @@ const schema = z.object({
   phoneNumber: z
     .string()
     .min(1)
-    .refine((val) =>
-      validator.isMobilePhone(val, undefined, { strictMode: true })
-    ),
+    .refine((val) => validator.isMobilePhone(val, "en-US")),
   dateOfBirth: z.coerce
     .date()
-    .max(calculateMinAge())
-    .min(new Date("1900-01-01")),
+    .max(calculatePastDate(18))
+    .min(calculatePastDate(100)),
   state: z.string().min(1),
   city: z.string().min(1),
   streetAddress: z.string().min(1),
-  socialSecurityNumber: z.string().regex(/^(\d{9})?$/),
+  socialSecurityNumber: z.string().regex(regex.socialSecurityNumber),
 });
 
 type Schema = z.infer<typeof schema>;
 
 const defaultValues: Schema = {
   city: "",
-  dateOfBirth: new Date("2000-01-01"),
+  dateOfBirth: calculatePastDate(18),
   email: "",
   firstName: "",
   lastName: "",

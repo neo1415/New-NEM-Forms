@@ -69,14 +69,14 @@ const formatComponents = {
     thousandSeparator: true,
   }),
   phoneNumber: createNumberFormat({
-    format: "#### ### ####",
+    format: "(###) ###-####",
     allowEmptyFormatting: true,
     mask: "_",
   }),
   socialSecurity: createNumberFormat({
     format: "### ## ####",
     allowEmptyFormatting: true,
-    mask: "-",
+    mask: "_",
   }),
   currency: createNumberFormat({
     thousandSeparator: true,

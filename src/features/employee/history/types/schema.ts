@@ -1,10 +1,11 @@
 import { ApiReasonForLeavingEnum } from "@/features/employee/history/types/apiTypes";
+import { calculatePastDate } from "@/utils/calculatePastDate";
 import { z } from "zod";
 
 const ReasonForLeavingEnum = z.nativeEnum(ApiReasonForLeavingEnum);
 
 const previousEmployerSchema = z.object({
-  name: z.string().min(1),
+  employerName: z.string().min(1),
   jobTitle: z.string().min(1),
   responsibilities: z.string().max(1000),
 });
@@ -13,13 +14,7 @@ const educationalInstitutionsSchema = z.object({
   institutionName: z.string().min(1),
   degree: z.string().min(1),
   fieldOfStudy: z.string().min(1),
-  graduationYear: z.coerce
-    .date()
-    .refine(
-      (date) =>
-        date.getFullYear() >= 1900 &&
-        date.getFullYear() <= new Date().getFullYear()
-    ),
+  graduationYear: z.coerce.date().max(new Date()).min(calculatePastDate(100)),
 });
 
 const schema = z

@@ -18,6 +18,7 @@ const FormErrorSummary = () => {
         "& .MuiAlert-message": { width: "100%" },
       }}
     >
+      <pre>{JSON.stringify(errors, null, 2)}</pre>
       <AlertTitle>{d.errorValidationTitle}</AlertTitle>
       <List dense>
         {formattedErrors.map(({ label, message, field }, index) => (

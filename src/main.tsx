@@ -10,11 +10,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 const queryClient = new QueryClient();
-
 setupZodErrors();
 
 createRoot(document.getElementById("root")!).render(
-  {now check the personal page for final checks and then do the same for others}
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>

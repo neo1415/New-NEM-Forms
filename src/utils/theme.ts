@@ -10,6 +10,15 @@ const theme = createTheme({
         component: Link,
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        slotProps: {
+          inputLabel: {
+            shrink: true,
+          },
+        },
+      },
+    },
     MuiButtonBase: {
       defaultProps: {
         LinkComponent: Link,

@@ -1,4 +1,6 @@
 import { Autocomplete } from "@/controllers/autocomplete";
+
+import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 import { TextField } from "@/controllers/text-field";
 import { EducationalInstitutions } from "@/features/employee/history/components/educational-institutions";
 import { PreviousEmployers } from "@/features/employee/history/components/previous-employers";
@@ -15,7 +17,7 @@ import {
   Schema,
 } from "@/features/employee/history/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import {
   FormProvider,
@@ -25,15 +27,18 @@ import {
   useWatch,
 } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { d } from "@/utils/dictionary";
+import { FormErrorSummary } from "@/components/form-error-summary";
 
 const Page = () => {
-  const { control, handleSubmit, reset } = useFormContext<Schema>();
-  const { updateFormData } = useStore();
   const navigate = useNavigate();
 
   const employmentStatusesQuery = useEmploymentStatuses();
   const reasonsForLeavingQuery = useReasonsForLeaving();
   const degreesQuery = useDegrees();
+
+  const { control, handleSubmit, reset } = useFormContext<Schema>();
+  const { updateFormData } = useStore();
 
   const reasonsForLeavingPreviousJobs = useWatch({
     control,
@@ -53,18 +58,23 @@ const Page = () => {
   return (
     <Grid
       container
-      component="form"
       spacing={2}
+      component="form"
       onSubmit={handleSubmit(onSubmit)}
     >
       <Grid size={{ xs: 12 }}>
-        <Button onClick={handleResetFormClick}>Reset</Button>
+        <IconButton onClick={handleResetFormClick} color="secondary">
+          <RestartAltOutlinedIcon />
+        </IconButton>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <FormErrorSummary />
       </Grid>
       <Grid size={{ xs: 12 }}>
         <Autocomplete<Schema>
           name="currentEmploymentStatus"
           options={employmentStatusesQuery.data}
-          textFieldProps={{ label: "Current Employment Status" }}
+          textFieldProps={{ label: d.currentEmploymentStatus }}
         />
       </Grid>
 
@@ -72,7 +82,7 @@ const Page = () => {
         <Autocomplete<Schema, true>
           name="reasonsForLeavingPreviousJobs"
           options={reasonsForLeavingQuery.data}
-          textFieldProps={{ label: "Current Employment Status" }}
+          textFieldProps={{ label: d.reasonsForLeavingPreviousJobs }}
           multiple={true}
         />
       </Grid>
@@ -84,7 +94,7 @@ const Page = () => {
           <TextField<Schema>
             sx={{ width: 1 }}
             name="otherReasonsForLeaving"
-            label="Other Reasons For Leaving"
+            label={d.otherReasonsForLeaving}
             multiline
             maxRows={4}
           />
@@ -95,16 +105,18 @@ const Page = () => {
         <Autocomplete<Schema>
           name="highestDegreeObtained"
           options={degreesQuery.data}
-          textFieldProps={{ label: "Highest Degree Obtained" }}
+          textFieldProps={{ label: d.highestDegreeObtained }}
         />
       </Grid>
 
       <PreviousEmployers />
       <EducationalInstitutions />
 
-      <Button type="submit" variant="contained">
-        Next Step
-      </Button>
+      <Grid offset="auto">
+        <Button type="submit" variant="contained">
+          {d.nextStep}
+        </Button>
+      </Grid>
     </Grid>
   );
 };

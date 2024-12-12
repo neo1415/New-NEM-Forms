@@ -10,6 +10,21 @@ const d = {
   streetAddress: "Street Address",
   nextStep: "Next Step",
   errorValidationTitle: "Please Check Your Entries",
+  currentEmploymentStatus: "Current Employment Status",
+  reasonsForLeavingPreviousJobs: "Reasons for Leaving Previous Jobs",
+  otherReasonsForLeaving: "Other Reasons for Leaving",
+  highestDegreeObtained: "Highest Degree Obtained",
+  previousEmployers: "Previous Employers",
+  employer: "Employer",
+  responsibilities: "Responsibilities",
+  name: "Name",
+  jobTitle: "Job Title",
+  educationalInstitutions: "Educational Institutions",
+  institution: "Institution",
+  degree: "Degree",
+  fieldOfStudy: "Field of Study",
+  institutionName: "Institution Name",
+  employerName: "Employer Name",
 } as const;
 
 export { d };
