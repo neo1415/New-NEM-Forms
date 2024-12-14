@@ -1,3 +1,4 @@
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 import {
   InputBaseComponentProps,
   TextField as MuiTextField,
@@ -6,7 +7,7 @@ import {
   Theme,
 } from "@mui/material";
 import { forwardRef, ReactElement, Ref } from "react";
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
+import { Controller, FieldValues, Path } from "react-hook-form";
 import { NumericFormat, PatternFormat } from "react-number-format";
 
 type FormatType =
@@ -88,7 +89,7 @@ const TextField = forwardRef(
     { name, format, sx, ...textFieldProps }: TextFieldProps<T>,
     ref: Ref<HTMLInputElement>
   ) => {
-    const { control } = useFormContext<T>();
+    const { control, readOnly } = useFormContext<T>();
 
     const getInputComponent = (format?: FormatType) => {
       return format ? formatComponents[format] : undefined;
@@ -112,10 +113,12 @@ const TextField = forwardRef(
             helperText={error?.message}
             sx={defaultSx}
             slotProps={{
-              ...textFieldProps.slotProps,
+              ...textFieldProps?.slotProps,
               input: {
-                ...textFieldProps.slotProps?.input,
+                ...textFieldProps?.slotProps?.input,
                 inputComponent: getInputComponent(format),
+                readOnly,
+                ...(readOnly && { type: undefined }),
               },
             }}
           />

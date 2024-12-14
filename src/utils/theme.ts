@@ -1,6 +1,5 @@
+import { Link } from "@/components/link";
 import { createTheme } from "@mui/material";
-
-import { Link } from "@/controllers/link";
 
 const theme = createTheme({
   palette: { mode: "dark" },

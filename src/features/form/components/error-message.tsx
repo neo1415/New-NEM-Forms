@@ -10,7 +10,12 @@ type ErrorMessageProps<T extends FieldValues> = {
 const ErrorMessage = <T extends FieldValues>({
   name,
 }: ErrorMessageProps<T>) => {
-  return <RHFErrorMessage name={name} as={<FormHelperText error />} />;
+  return (
+    <>
+      <RHFErrorMessage name={name} as={<FormHelperText error />} />
+      <RHFErrorMessage name={`${name}.root`} as={<FormHelperText error />} />
+    </>
+  );
 };
 
 export { ErrorMessage };

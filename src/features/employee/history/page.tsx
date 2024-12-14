@@ -1,7 +1,7 @@
-import { Autocomplete } from "@/controllers/autocomplete";
+import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
 
-import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
-import { TextField } from "@/controllers/text-field";
+import { Form } from "@/features/form/components/form";
+import { TextField } from "@/features/form/components/controllers/text-field";
 import { EducationalInstitutions } from "@/features/employee/history/components/educational-institutions";
 import { PreviousEmployers } from "@/features/employee/history/components/previous-employers";
 import {
@@ -16,65 +16,38 @@ import {
   schema,
   Schema,
 } from "@/features/employee/history/types/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, IconButton } from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-  useWatch,
-} from "react-hook-form";
-import { useNavigate } from "react-router";
 import { d } from "@/utils/dictionary";
-import { FormErrorSummary } from "@/components/form-error-summary";
+import Grid from "@mui/material/Grid2";
+import { SubmitHandler, useWatch } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 
 const Page = () => {
-  const navigate = useNavigate();
-
   const employmentStatusesQuery = useEmploymentStatuses();
   const reasonsForLeavingQuery = useReasonsForLeaving();
   const degreesQuery = useDegrees();
 
-  const { control, handleSubmit, reset } = useFormContext<Schema>();
-  const { updateFormData } = useStore();
+  const { control } = useFormContext<Schema>();
 
   const reasonsForLeavingPreviousJobs = useWatch({
     control,
     name: "reasonsForLeavingPreviousJobs",
   });
 
-  const handleResetFormClick = () => {
-    updateFormData(defaultValues);
-    reset(defaultValues);
-  };
-
-  const onSubmit: SubmitHandler<Schema> = (data) => {
-    updateFormData(data);
-    navigate("/skills");
-  };
-
   return (
-    <Grid
-      container
-      spacing={2}
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Grid size={{ xs: 12 }}>
-        <IconButton onClick={handleResetFormClick} color="secondary">
-          <RestartAltOutlinedIcon />
-        </IconButton>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <FormErrorSummary />
-      </Grid>
-      <Grid size={{ xs: 12 }}>
+    <>
+      <Grid size={{ xs: 6 }}>
         <Autocomplete<Schema>
           name="currentEmploymentStatus"
           options={employmentStatusesQuery.data}
           textFieldProps={{ label: d.currentEmploymentStatus }}
+        />
+      </Grid>
+      <Grid size={{ xs: 6 }}>
+        <Autocomplete<Schema>
+          name="highestDegreeObtained"
+          options={degreesQuery.data}
+          textFieldProps={{ label: d.highestDegreeObtained }}
         />
       </Grid>
 
@@ -92,7 +65,6 @@ const Page = () => {
           ReasonForLeavingEnum.enum.OTHER
         ) && (
           <TextField<Schema>
-            sx={{ width: 1 }}
             name="otherReasonsForLeaving"
             label={d.otherReasonsForLeaving}
             multiline
@@ -101,39 +73,37 @@ const Page = () => {
         )}
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
-        <Autocomplete<Schema>
-          name="highestDegreeObtained"
-          options={degreesQuery.data}
-          textFieldProps={{ label: d.highestDegreeObtained }}
-        />
-      </Grid>
-
       <PreviousEmployers />
       <EducationalInstitutions />
-
-      <Grid offset="auto">
-        <Button type="submit" variant="contained">
-          {d.nextStep}
-        </Button>
-      </Grid>
-    </Grid>
+    </>
   );
 };
 
-const Provider = () => {
-  const { formData } = useStore();
+type ProviderProps = {
+  readOnly?: boolean;
+};
+const Provider = ({ readOnly }: ProviderProps) => {
+  const navigate = useNavigate();
 
-  const form = useForm<Schema>({
-    mode: "all",
-    resolver: zodResolver(schema),
-    values: formData,
-  });
+  const { formData, updateFormData } = useStore();
+
+  const handleSubmit: SubmitHandler<Schema> = (data) => {
+    updateFormData(data);
+    navigate("/skills");
+  };
 
   return (
-    <FormProvider {...form}>
+    <Form
+      submitButtonText={d.nextStep}
+      schema={schema}
+      values={formData}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      readOnly={readOnly}
+      title={d.history}
+    >
       <Page />
-    </FormProvider>
+    </Form>
   );
 };
 

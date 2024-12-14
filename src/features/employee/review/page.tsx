@@ -1,5 +1,4 @@
-import { Checkbox } from "@/controllers/checkbox";
-import { Dropzone } from "@/controllers/dropzone";
+import { Form } from "@/features/form/components/form";
 import { useStore } from "@/features/employee/review/hooks/useStore";
 import {
   defaultValues,
@@ -7,41 +6,15 @@ import {
   Schema,
 } from "@/features/employee/review/types/schema";
 import { useEmployeeWrapperStore } from "@/features/employee/wrapper/hooks/useStore";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
+import { Dropzone } from "@/features/form/components/controllers/dropzone";
+import { Checkbox } from "@/features/form/components/controllers/checkbox";
+import { d } from "@/utils/dictionary";
 
 const Page = () => {
-  const { handleSubmit, reset } = useFormContext<Schema>();
-
-  const { updateFormData } = useStore();
-  const { updateSummaryDialogOpen } = useEmployeeWrapperStore();
-  const handleResetFormClick = () => {
-    reset(defaultValues);
-  };
-
-  const onSubmit: SubmitHandler<Schema> = (data) => {
-    updateFormData(data);
-    updateSummaryDialogOpen(true);
-  };
-
   return (
-    <Grid
-      container
-      component="form"
-      spacing={2}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Grid size={{ xs: 12 }}>
-        <Button onClick={handleResetFormClick}>Reset</Button>
-      </Grid>
-
+    <>
       <Grid size={{ xs: 6 }}>
         <Dropzone<Schema>
           name="portfolioFiles"
@@ -75,25 +48,33 @@ const Page = () => {
           label="I accept the terms and conditions."
         />
       </Grid>
-
-      <Button type="submit" variant="contained">
-        Next Step
-      </Button>
-    </Grid>
+    </>
   );
 };
 
-const Provider = () => {
-  const form = useForm<Schema>({
-    mode: "all",
-    resolver: zodResolver(schema),
-    defaultValues,
-  });
+type ProviderProps = {
+  readOnly?: boolean;
+};
+const Provider = ({ readOnly }: ProviderProps) => {
+  const { updateSummaryDialogOpen } = useEmployeeWrapperStore();
+  const { formData, updateFormData } = useStore();
+
+  const handleSubmit: SubmitHandler<Schema> = (data) => {
+    updateFormData(data);
+    updateSummaryDialogOpen(true);
+  };
 
   return (
-    <FormProvider {...form}>
+    <Form
+      schema={schema}
+      values={formData}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      readOnly={readOnly}
+      title={d.review}
+    >
       <Page />
-    </FormProvider>
+    </Form>
   );
 };
 

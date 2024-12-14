@@ -1,4 +1,5 @@
-import { ErrorMessage } from "@/controllers/error-message";
+import { ErrorMessage } from "@/features/form/components/error-message";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 import {
   FormControl,
   FormControlLabel,
@@ -8,7 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { forwardRef, ReactElement, Ref } from "react";
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
+import { Controller, FieldValues, Path } from "react-hook-form";
 
 type CheckboxProps<T extends FieldValues> = Omit<
   MuiCheckboxProps,
@@ -31,7 +32,7 @@ const Checkbox = forwardRef(
     }: CheckboxProps<T>,
     ref: Ref<HTMLInputElement>
   ) => {
-    const { control } = useFormContext<T>();
+    const { control, readOnly } = useFormContext<T>();
     const theme = useTheme();
 
     return (
@@ -67,6 +68,7 @@ const Checkbox = forwardRef(
                       color: error ? theme.palette.error.main : "inherit",
                     },
                   }}
+                  disabled={readOnly}
                   control={checkbox}
                   label={label}
                   labelPlacement={labelPlacement}

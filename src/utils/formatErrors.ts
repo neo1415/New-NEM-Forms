@@ -5,6 +5,8 @@ type ErrorMessage = {
   field: string;
   label: string;
   message: string | undefined;
+  category?: string;
+  index?: number;
 };
 
 const humanizeFieldName = (field: string): string => {
@@ -19,39 +21,46 @@ const formatErrors = <T extends Record<string, unknown>>(
 ): ErrorMessage[] => {
   const formattedErrors: ErrorMessage[] = [];
 
-  const processErrors = (obj: any, parentField = ""): void => {
-    // Guard clause for null/undefined
+  const processErrors = (
+    obj: any,
+    parentField = "",
+    parentLabel = ""
+  ): void => {
     if (!obj || typeof obj !== "object") {
       return;
     }
 
-    make nested array object error better and categorize them
     Object.entries(obj).forEach(([key, value]) => {
-      // Skip if key or value is undefined
       if (!key || value === undefined) {
         return;
       }
 
       const currentField = parentField ? `${parentField}.${key}` : key;
+      const isArrayField = currentField.includes("[");
+      const arrayMatch = currentField.match(/\[(\d+)\]/);
+      const arrayIndex = arrayMatch ? parseInt(arrayMatch[1]) : undefined;
+
+      const categoryName = currentField.split("[")[0];
+      const categoryLabel =
+        d[categoryName as keyof typeof d] || humanizeFieldName(categoryName);
 
       if (Array.isArray(value)) {
-        // Handle array fields (like previousEmployers)
         value.forEach((item, index) => {
           if (item) {
-            processErrors(item, `${currentField}[${index}]`);
+            processErrors(item, `${currentField}[${index}]`, categoryLabel);
           }
         });
       } else if (value && typeof value === "object") {
         if (value.message) {
-          // This is an error object
           formattedErrors.push({
             field: currentField,
             label: d[key as keyof typeof d] || humanizeFieldName(key),
             message: value.message,
+            category: isArrayField ? categoryLabel : undefined,
+            index: arrayIndex,
           });
         } else {
-          // This is a nested object
-          processErrors(value, currentField);
+          processErrors(value, currentField, parentLabel);
         }
       }
     });
@@ -63,7 +72,17 @@ const formatErrors = <T extends Record<string, unknown>>(
     console.error("Error processing form errors:", error);
   }
 
-  return formattedErrors;
+  return formattedErrors.sort((a, b) => {
+    if (a.category && b.category) {
+      if (a.category !== b.category) {
+        return a.category.localeCompare(b.category);
+      }
+      return (a.index || 0) - (b.index || 0);
+    }
+    if (a.category) return 1;
+    if (b.category) return -1;
+    return 0;
+  });
 };
 
 export { formatErrors };

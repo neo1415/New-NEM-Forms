@@ -1,10 +1,11 @@
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 import { SxProps, Theme } from "@mui/material";
 import {
   DatePicker as MuiDatePicker,
   DatePickerProps as MuiDatePickerProps,
 } from "@mui/x-date-pickers";
 import { forwardRef, ReactElement, Ref } from "react";
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
+import { Controller, FieldValues, Path } from "react-hook-form";
 
 type DatePickerProps<T extends FieldValues> = Omit<
   MuiDatePickerProps<Date>,
@@ -18,7 +19,7 @@ const DatePicker = forwardRef(
     { name, sx, ...datePickerProps }: DatePickerProps<T>,
     ref: Ref<HTMLDivElement>
   ) => {
-    const { control } = useFormContext<T>();
+    const { control, readOnly } = useFormContext<T>();
 
     const defaultSx: SxProps<Theme> = {
       width: 1,
@@ -51,13 +52,16 @@ const DatePicker = forwardRef(
                 onChange(finalValue);
               }}
               ref={ref}
+              disableOpenPicker={readOnly}
               sx={defaultSx}
+              readOnly={readOnly}
               slotProps={{
                 ...datePickerProps.slotProps,
                 textField: {
                   ...datePickerProps.slotProps?.textField,
                   error: !!error,
                   helperText: error?.message,
+                  name,
                 },
               }}
             />

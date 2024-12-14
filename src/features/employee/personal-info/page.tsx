@@ -1,7 +1,6 @@
-import { FormErrorSummary } from "@/components/form-error-summary";
-import { Autocomplete, AutocompleteOption } from "@/controllers/autocomplete";
-import { DatePicker } from "@/controllers/date-picker";
-import { TextField } from "@/controllers/text-field";
+import { Form } from "@/features/form/components/form";
+import { DatePicker } from "@/features/form/components/controllers/date-picker";
+import { TextField } from "@/features/form/components/controllers/text-field";
 import {
   useCities,
   useStates,
@@ -14,28 +13,20 @@ import {
 } from "@/features/employee/personal-info/types/schema";
 import { calculatePastDate } from "@/utils/calculatePastDate";
 import { d } from "@/utils/dictionary";
-import { zodResolver } from "@hookform/resolvers/zod";
-import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
-import { Button, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-  useWatch,
-} from "react-hook-form";
+import { SubmitHandler, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router";
+import {
+  Autocomplete,
+  AutocompleteOption,
+} from "@/features/form/components/controllers/autocomplete";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 
 const Page = () => {
-  const navigate = useNavigate();
-
-  const { updateFormData } = useStore();
-
   const statesQuery = useStates();
   const citiesQuery = useCities();
 
-  const { control, setValue, handleSubmit, reset } = useFormContext<Schema>();
+  const { control, setValue } = useFormContext<Schema>();
   const state = useWatch({ control, name: "state" });
 
   const handleOptionSelect = (option: AutocompleteOption | null) => {
@@ -44,31 +35,8 @@ const Page = () => {
     }
   };
 
-  const handleResetFormClick = () => {
-    updateFormData(defaultValues);
-    reset(defaultValues);
-  };
-
-  const onSubmit: SubmitHandler<Schema> = (data) => {
-    updateFormData(data);
-    navigate("/history");
-  };
-
   return (
-    <Grid
-      container
-      spacing={2}
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Grid size={{ xs: 12 }}>
-        <IconButton onClick={handleResetFormClick} color="secondary">
-          <RestartAltOutlinedIcon />
-        </IconButton>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <FormErrorSummary />
-      </Grid>
+    <>
       <Grid size={{ xs: 4 }}>
         <TextField<Schema> name="firstName" label={d.firstName} />
       </Grid>
@@ -127,28 +95,33 @@ const Page = () => {
           maxRows={4}
         />
       </Grid>
-      <Grid offset="auto">
-        <Button type="submit" variant="contained">
-          {d.nextStep}
-        </Button>
-      </Grid>
-    </Grid>
+    </>
   );
 };
 
-const Provider = () => {
-  const { formData } = useStore();
+type ProviderProps = { readOnly?: boolean };
+const Provider = ({ readOnly }: ProviderProps) => {
+  const navigate = useNavigate();
 
-  const form = useForm<Schema>({
-    mode: "all",
-    resolver: zodResolver(schema),
-    values: formData,
-  });
+  const { formData, updateFormData } = useStore();
+
+  const handleSubmit: SubmitHandler<Schema> = (data) => {
+    updateFormData(data);
+    navigate("/history");
+  };
 
   return (
-    <FormProvider {...form}>
+    <Form
+      submitButtonText={d.nextStep}
+      schema={schema}
+      values={formData}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      readOnly={readOnly}
+      title={d.personalInfo}
+    >
       <Page />
-    </FormProvider>
+    </Form>
   );
 };
 

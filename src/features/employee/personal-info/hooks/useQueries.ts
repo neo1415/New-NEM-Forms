@@ -3,8 +3,9 @@ import {
   getCities,
   getStates,
 } from "@/features/employee/personal-info/utils/api";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 import { useQuery } from "@tanstack/react-query";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 
 const useStates = () => {
   return useQuery({

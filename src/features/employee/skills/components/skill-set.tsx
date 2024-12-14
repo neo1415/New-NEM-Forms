@@ -1,5 +1,5 @@
-import { Autocomplete } from "@/controllers/autocomplete";
-import { TextField } from "@/controllers/text-field";
+import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
+import { TextField } from "@/features/form/components/controllers/text-field";
 import {
   useSkillCategories,
   useSkills,
@@ -7,17 +7,19 @@ import {
 } from "@/features/employee/skills/hooks/useQueries";
 
 import { Schema } from "@/features/employee/skills/types/schema";
+import { d } from "@/utils/dictionary";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
-import { IconButton, Typography } from "@mui/material";
+import { Chip, IconButton, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { UseFieldArrayRemove, useFormContext, useWatch } from "react-hook-form";
+import { UseFieldArrayRemove, useWatch } from "react-hook-form";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 
 type SkillSetProps = {
   fieldIndex: number;
   fieldRemove: UseFieldArrayRemove;
 };
 const SkillSet = ({ fieldIndex, fieldRemove }: SkillSetProps) => {
-  const { control, setValue } = useFormContext<Schema>();
+  const { control, setValue, readOnly } = useFormContext<Schema>();
 
   const category = useWatch({
     control,
@@ -46,66 +48,63 @@ const SkillSet = ({ fieldIndex, fieldRemove }: SkillSetProps) => {
   };
 
   return (
-    <Grid spacing={2} container size={{ xs: 12 }}>
-      <Grid size={{ xs: 12 }}>
-        <Typography>{`Skill ${fieldIndex + 1}:`}</Typography>
+    <>
+      <Grid sx={{ display: "flex", alignItems: "center" }} size={{ xs: 12 }}>
+        <Chip
+          label={`${d.skill} #${fieldIndex + 1}:`}
+          size="small"
+          color="secondary"
+        />
+        {!readOnly && (
+          <IconButton color="error" onClick={handleRemoveClick}>
+            <RemoveCircleOutlineRoundedIcon />
+          </IconButton>
+        )}
       </Grid>
-      <Grid container size={{ xs: 11 }}>
-        <Grid size={{ xs: 4 }}>
-          <Autocomplete<Schema>
-            name={`skillSets.${fieldIndex}.category`}
-            options={skillCategoriesQuery.data}
-            textFieldProps={{ label: "Category" }}
-            onOptionSelect={handleCategoryChange}
-          />
-        </Grid>
-        <Grid size={{ xs: 4 }}>
+      <Grid size={{ xs: 4 }}>
+        <Autocomplete<Schema>
+          name={`skillSets.${fieldIndex}.category`}
+          options={skillCategoriesQuery.data}
+          textFieldProps={{ label: d.category }}
+          onOptionSelect={handleCategoryChange}
+        />
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        {!!category && (
           <Autocomplete<Schema>
             name={`skillSets.${fieldIndex}.subcategory`}
             options={skillSubcategoriesQuery.data}
-            textFieldProps={{ label: "Sub Category" }}
+            textFieldProps={{ label: d.subCategory }}
             onOptionSelect={handleSubcategoryChange}
           />
-        </Grid>
-        <Grid size={{ xs: 4 }}>
+        )}
+      </Grid>
+      <Grid size={{ xs: 4 }}>
+        {!!subcategory && (
           <Autocomplete<Schema, true>
             name={`skillSets.${fieldIndex}.skills`}
             options={skillsQuery.data}
-            textFieldProps={{ label: "Skills" }}
+            textFieldProps={{ label: d.skills }}
             multiple
           />
-        </Grid>
-        <Grid size={{ xs: 2 }}>
-          <TextField<Schema>
-            sx={{ width: 1 }}
-            name={`skillSets.${fieldIndex}.yearsOfExperience`}
-            label="Years of Experience"
-            type="number"
-          />
-        </Grid>
-        <Grid size={{ xs: 10 }}>
-          <TextField<Schema>
-            sx={{ width: 1 }}
-            name={`skillSets.${fieldIndex}.description`}
-            label="Description"
-            multiline
-            maxRows={4}
-          />
-        </Grid>
+        )}
       </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={{ xs: 1 }}
-      >
-        <IconButton color="error" onClick={handleRemoveClick}>
-          <RemoveCircleOutlineRoundedIcon />
-        </IconButton>
+      <Grid size={{ xs: 4 }}>
+        <TextField<Schema>
+          name={`skillSets.${fieldIndex}.yearsOfExperience`}
+          label={d.yearsOfExperience}
+          type="number"
+        />
       </Grid>
-    </Grid>
+      <Grid size={{ xs: 8 }}>
+        <TextField<Schema>
+          name={`skillSets.${fieldIndex}.description`}
+          label={d.description}
+          multiline
+          maxRows={4}
+        />
+      </Grid>
+    </>
   );
 };
 

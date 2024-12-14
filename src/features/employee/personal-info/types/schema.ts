@@ -18,7 +18,10 @@ const schema = z.object({
   state: z.string().min(1),
   city: z.string().min(1),
   streetAddress: z.string().min(1),
-  socialSecurityNumber: z.string().regex(regex.socialSecurityNumber),
+  socialSecurityNumber: z.union([
+    z.string().regex(regex.socialSecurityNumber),
+    z.literal(""),
+  ]),
 });
 
 type Schema = z.infer<typeof schema>;

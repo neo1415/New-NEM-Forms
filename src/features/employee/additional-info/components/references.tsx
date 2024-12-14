@@ -1,23 +1,27 @@
-import { Autocomplete } from "@/controllers/autocomplete";
-import { ErrorMessage } from "@/controllers/error-message";
-import { TextField } from "@/controllers/text-field";
 import { useRelationships } from "@/features/employee/additional-info/hooks/useQueries";
 
 import { Schema } from "@/features/employee/additional-info/types/schema";
+import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
+import { TextField } from "@/features/form/components/controllers/text-field";
+import { ErrorMessage } from "@/features/form/components/error-message";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
+import { d } from "@/utils/dictionary";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
-import { IconButton, Typography } from "@mui/material";
+import { Chip, IconButton, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
+import { Fragment } from "react/jsx-runtime";
 
 const References = () => {
-  const { control } = useFormContext<Schema>();
+  const relationshipsQuery = useRelationships();
+
+  const { control, readOnly } = useFormContext<Schema>();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "references",
   });
-  const relationshipsQuery = useRelationships();
 
   const handleAddClick = () => {
     append({
@@ -33,52 +37,59 @@ const References = () => {
 
   return (
     <>
-      <Grid sx={{ display: "flex", alignItems: "center" }} size={{ xs: 12 }}>
-        <Typography>References:</Typography>
-        <IconButton onClick={handleAddClick} color="success">
-          <AddCircleRoundedIcon />
-        </IconButton>
+      <Grid
+        sx={{ display: "flex", alignItems: "center" }}
+        size={12}
+        id="references"
+      >
+        <Typography variant="subtitle2">{d.references}:</Typography>
+        {!readOnly && (
+          <IconButton onClick={handleAddClick} color="success">
+            <AddCircleRoundedIcon />
+          </IconButton>
+        )}
       </Grid>
       {fields.map((field, index) => (
-        <Grid spacing={2} container size={{ xs: 12 }} key={field.id}>
-          <Grid size={{ xs: 12 }}>
-            <Typography>{`Reference ${index + 1}:`}</Typography>
+        <Fragment key={field.id}>
+          <Grid
+            sx={{ display: "flex", alignItems: "center" }}
+            size={{ xs: 12 }}
+          >
+            <Chip
+              label={`${d.reference} #${index + 1}:`}
+              size="small"
+              color="secondary"
+            />
+
+            {!readOnly && (
+              <IconButton
+                color="error"
+                onClick={() => handleRemoveClick(index)}
+              >
+                <RemoveCircleOutlineRoundedIcon />
+              </IconButton>
+            )}
           </Grid>
-          <Grid size={{ xs: 3 }}>
+          <Grid size={{ xs: 4 }}>
             <TextField<Schema>
-              sx={{ width: 1 }}
               name={`references.${index}.name`}
-              label="Name"
+              label={d.name}
             />
           </Grid>
-          <Grid size={{ xs: 3 }}>
+          <Grid size={{ xs: 4 }}>
             <Autocomplete<Schema>
               options={relationshipsQuery.data}
-              sx={{ width: 1 }}
               name={`references.${index}.relationship`}
-              textFieldProps={{ label: "Relationship" }}
+              textFieldProps={{ label: d.relationship }}
             />
           </Grid>
-          <Grid size={{ xs: 3 }}>
+          <Grid size={{ xs: 4 }}>
             <TextField<Schema>
-              sx={{ width: 1 }}
               name={`references.${index}.contactInformation`}
-              label="Contact Information"
+              label={d.contactInformation}
             />
           </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={{ xs: 1 }}
-          >
-            <IconButton color="error" onClick={() => handleRemoveClick(index)}>
-              <RemoveCircleOutlineRoundedIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
+        </Fragment>
       ))}
       <Grid size={{ xs: 12 }}>
         <ErrorMessage<Schema> name="references" />

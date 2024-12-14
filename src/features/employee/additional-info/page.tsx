@@ -1,6 +1,3 @@
-import { DatePicker } from "@/controllers/date-picker";
-import { Slider } from "@/controllers/slider";
-import { TextField } from "@/controllers/text-field";
 import { References } from "@/features/employee/additional-info/components/references";
 import { useStore } from "@/features/employee/additional-info/hooks/useStore";
 import {
@@ -8,94 +5,73 @@ import {
   schema,
   Schema,
 } from "@/features/employee/additional-info/types/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@mui/material";
+import { DatePicker } from "@/features/form/components/controllers/date-picker";
+import { Slider } from "@/features/form/components/controllers/slider";
+import { TextField } from "@/features/form/components/controllers/text-field";
+import { Form } from "@/features/form/components/form";
+import { d } from "@/utils/dictionary";
 import Grid from "@mui/material/Grid2";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
+import { startOfToday } from "date-fns";
+import { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 const Page = () => {
-  const { handleSubmit, reset } = useFormContext<Schema>();
-  const { updateFormData } = useStore();
-  const navigate = useNavigate();
-
-  const handleResetFormClick = () => {
-    updateFormData(defaultValues);
-    reset(defaultValues);
-  };
-
-  const onSubmit: SubmitHandler<Schema> = (data) => {
-    updateFormData(data);
-    navigate("/review");
-  };
-
   return (
-    <Grid
-      container
-      component="form"
-      spacing={2}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Grid size={{ xs: 12 }}>
-        <Button onClick={handleResetFormClick}>Reset</Button>
+    <>
+      <Grid size={{ xs: 6 }}>
+        <TextField<Schema> name="portfolioLink" label={d.portfolioLink} />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
-        <TextField<Schema> name="portfolioLink" label="Portfolio Link" />
-      </Grid>
-
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 6 }}>
         <DatePicker<Schema>
           name="availabilityToStart"
-          label="Availability to Start"
+          label={d.availabilityToStart}
+          minDate={startOfToday()}
         />
       </Grid>
 
       <Grid size={{ xs: 12 }}>
         <Slider<Schema>
           name="salaryExpectations"
+          label={d.salaryExpectations}
           min={30000}
-          max={1000000}
-          marks={[
-            {
-              value: 30000,
-              label: 30000,
-            },
-            {
-              value: 1000000,
-              label: 1000000,
-            },
-          ]}
+          max={200000}
+          unit="$"
+          step={10000}
+          valueLabelDisplay="on"
         />
       </Grid>
 
       <References />
-
-      <Button type="submit" variant="contained">
-        Next Step
-      </Button>
-    </Grid>
+    </>
   );
 };
 
-const Provider = () => {
-  const { formData } = useStore();
+type ProviderProps = {
+  readOnly?: boolean;
+};
+const Provider = ({ readOnly }: ProviderProps) => {
+  const navigate = useNavigate();
 
-  const form = useForm<Schema>({
-    mode: "all",
-    resolver: zodResolver(schema),
-    values: formData,
-  });
+  const { formData, updateFormData } = useStore();
+
+  const handleSubmit: SubmitHandler<Schema> = (data) => {
+    updateFormData(data);
+    navigate("/review");
+  };
 
   return (
-    <FormProvider {...form}>
+    <Form
+      submitButtonText={d.nextStep}
+      schema={schema}
+      values={formData}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      readOnly={readOnly}
+      title={d.additionalInfo}
+    >
       <Page />
-    </FormProvider>
+    </Form>
   );
 };
 

@@ -1,4 +1,4 @@
-import { AutocompleteOption } from "@/controllers/autocomplete";
+import { AutocompleteOption } from "@/features/form/components/controllers/autocomplete";
 import { wait } from "@/utils/wait";
 const mockSkillCategories = [
   {

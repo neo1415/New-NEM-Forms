@@ -1,3 +1,4 @@
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 import {
   AutocompleteValue,
   Autocomplete as MuiAutocomplete,
@@ -5,7 +6,7 @@ import {
   TextField as MuiTextField,
 } from "@mui/material";
 import { forwardRef, ReactElement, Ref } from "react";
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
+import { Controller, FieldValues, Path } from "react-hook-form";
 
 type AutocompleteOption = {
   label: string;
@@ -43,7 +44,7 @@ const Autocomplete = forwardRef(
     }: AutocompleteProps<T, Multiple>,
     ref: Ref<HTMLInputElement>
   ) => {
-    const { control } = useFormContext<T>();
+    const { control, readOnly } = useFormContext<T>();
 
     return (
       <Controller
@@ -85,6 +86,8 @@ const Autocomplete = forwardRef(
               multiple={multiple}
               options={options}
               value={getValue()}
+              readOnly={readOnly}
+              id={name}
               onChange={(_, newValue) => {
                 if (multiple) {
                   const values = (newValue as AutocompleteOption[]).map(
@@ -110,11 +113,20 @@ const Autocomplete = forwardRef(
               }}
               renderInput={(params) => (
                 <MuiTextField
-                  {...params}
                   {...textFieldProps}
+                  {...params}
                   inputRef={ref}
                   error={!!error}
                   helperText={error?.message}
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      readOnly,
+                      endAdornment: readOnly
+                        ? null
+                        : params.InputProps.endAdornment,
+                    },
+                  }}
                 />
               )}
             />

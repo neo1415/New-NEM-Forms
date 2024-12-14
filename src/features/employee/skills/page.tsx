@@ -1,5 +1,6 @@
-import { Autocomplete } from "@/controllers/autocomplete";
-import { TextField } from "@/controllers/text-field";
+import { Form } from "@/features/form/components/form";
+import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
+import { TextField } from "@/features/form/components/controllers/text-field";
 import { ProficiencyLevels } from "@/features/employee/skills/components/proficiency-levels";
 import { SkillSets } from "@/features/employee/skills/components/skill-sets";
 import {
@@ -13,57 +14,30 @@ import {
   schema,
   Schema,
 } from "@/features/employee/skills/types/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@mui/material";
+import { d } from "@/utils/dictionary";
 import Grid from "@mui/material/Grid2";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-  useWatch,
-} from "react-hook-form";
+import { SubmitHandler, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 
 const Page = () => {
-  const { control, handleSubmit, reset } = useFormContext<Schema>();
-  const { updateFormData } = useStore();
-  const navigate = useNavigate();
-
   const coreCompetenciesQuery = useCoreCompetencies();
   const languagesQuery = useLanguages();
+
+  const { control } = useFormContext<Schema>();
 
   const coreCompetencies = useWatch({
     control,
     name: "coreCompetencies",
   });
 
-  const handleResetFormClick = () => {
-    updateFormData(defaultValues);
-    reset(defaultValues);
-  };
-
-  const onSubmit: SubmitHandler<Schema> = (data) => {
-    updateFormData(data);
-    navigate("/additional-info");
-  };
-
   return (
-    <Grid
-      container
-      component="form"
-      spacing={2}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Grid size={{ xs: 12 }}>
-        <Button onClick={handleResetFormClick}>Reset</Button>
-      </Grid>
-
+    <>
       <Grid size={{ xs: 6 }}>
         <Autocomplete<Schema, true>
           name="coreCompetencies"
           options={coreCompetenciesQuery.data}
-          textFieldProps={{ label: "Core Competencies" }}
+          textFieldProps={{ label: d.coreCompetencies }}
           multiple
         />
       </Grid>
@@ -71,9 +45,8 @@ const Page = () => {
       <Grid size={{ xs: 6 }}>
         {coreCompetencies.includes(CoreCompetencyEnum.enum.OTHER) && (
           <TextField<Schema>
-            sx={{ width: 1 }}
             name="otherCoreCompetencies"
-            label="Other Core Competencies"
+            label={d.otherCoreCompetencies}
             multiline
             maxRows={4}
           />
@@ -84,34 +57,42 @@ const Page = () => {
         <Autocomplete<Schema, true>
           name="languagesSpoken"
           options={languagesQuery.data}
-          textFieldProps={{ label: "Languages Spoken" }}
+          textFieldProps={{ label: d.languagesSpoken }}
           multiple
         />
       </Grid>
 
       <ProficiencyLevels />
       <SkillSets />
-
-      <Button type="submit" variant="contained">
-        Next Step
-      </Button>
-    </Grid>
+    </>
   );
 };
 
-const Provider = () => {
-  const { formData } = useStore();
+type ProviderProps = {
+  readOnly?: boolean;
+};
+const Provider = ({ readOnly }: ProviderProps) => {
+  const navigate = useNavigate();
 
-  const form = useForm<Schema>({
-    mode: "all",
-    resolver: zodResolver(schema),
-    values: formData,
-  });
+  const { formData, updateFormData } = useStore();
+
+  const handleSubmit: SubmitHandler<Schema> = (data) => {
+    updateFormData(data);
+    navigate("/additional-info");
+  };
 
   return (
-    <FormProvider {...form}>
+    <Form
+      submitButtonText={d.nextStep}
+      schema={schema}
+      values={formData}
+      defaultValues={defaultValues}
+      onSubmit={handleSubmit}
+      readOnly={readOnly}
+      title={d.skills}
+    >
       <Page />
-    </FormProvider>
+    </Form>
   );
 };
 
