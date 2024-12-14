@@ -1,4 +1,7 @@
 import { Form } from "@/features/form/components/form";
+
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+
 import { useStore } from "@/features/employee/review/hooks/useStore";
 import {
   defaultValues,
@@ -6,11 +9,11 @@ import {
   Schema,
 } from "@/features/employee/review/types/schema";
 import { useEmployeeWrapperStore } from "@/features/employee/wrapper/hooks/useStore";
+import { Checkbox } from "@/features/form/components/controllers/checkbox";
+import { Dropzone } from "@/features/form/components/controllers/dropzone";
+import { d } from "@/utils/dictionary";
 import Grid from "@mui/material/Grid2";
 import { SubmitHandler } from "react-hook-form";
-import { Dropzone } from "@/features/form/components/controllers/dropzone";
-import { Checkbox } from "@/features/form/components/controllers/checkbox";
-import { d } from "@/utils/dictionary";
 
 const Page = () => {
   return (
@@ -23,7 +26,7 @@ const Page = () => {
             "image/jpeg": [".jpg", ".jpeg"],
             "image/png": [".png"],
           }}
-          label="Upload Portfolio Files (Max 3 files, 5MB each)"
+          label={d.uploadPortfolioFiles}
           maxFiles={3}
           maxSize={5 * 1024 * 1024}
         />
@@ -35,7 +38,7 @@ const Page = () => {
           accept={{
             "application/pdf": [".pdf"],
           }}
-          label="Upload Resume (PDF only, max 5MB)"
+          label={d.uploadResume}
           maxFiles={1}
           maxSize={5 * 1024 * 1024}
           multiple={false}
@@ -45,7 +48,7 @@ const Page = () => {
       <Grid size={{ xs: 12 }}>
         <Checkbox<Schema>
           name="termsAndConditionsAccepted"
-          label="I accept the terms and conditions."
+          label={`${d.iAcceptTermsAndConditions}.`}
         />
       </Grid>
     </>
@@ -67,6 +70,9 @@ const Provider = ({ readOnly }: ProviderProps) => {
   return (
     <Form
       schema={schema}
+      slotProps={{
+        submitButtonProps: { startIcon: <SendOutlinedIcon /> },
+      }}
       values={formData}
       defaultValues={defaultValues}
       onSubmit={handleSubmit}

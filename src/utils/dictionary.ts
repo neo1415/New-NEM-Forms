@@ -55,6 +55,13 @@ const d = {
   additionalInfo: "Additional Info",
   review: "Review",
   graduationYear: "Graduation Year",
+  resetForm: "Reset Form",
+  iAcceptTermsAndConditions: "I accept the terms and conditions",
+  uploadPortfolioFiles: "Upload Portfolio Files",
+  uploadResume: "Upload Resume",
+  confirmInformation: "Confirm Information",
+  close: "Close",
+  youMustAcceptTermsAndConditions: "You must accept terms and conditions",
 } as const;
 
 export { d };

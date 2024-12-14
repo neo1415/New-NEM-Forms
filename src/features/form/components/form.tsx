@@ -4,13 +4,7 @@ import { FormErrorSummary } from "@/features/form/components/form-error-summary"
 import { d } from "@/utils/dictionary";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
-import {
-  Button,
-  ButtonProps,
-  IconButton,
-  IconButtonProps,
-  Typography,
-} from "@mui/material";
+import { Button, ButtonProps, Typography } from "@mui/material";
 import { ReactNode } from "react";
 import {
   DefaultValues,
@@ -21,8 +15,8 @@ import {
 } from "react-hook-form";
 import { ZodSchema } from "zod";
 
-import { FormProvider } from "react-hook-form";
 import { FormContext } from "@/features/form/types/formContext";
+import { FormProvider } from "react-hook-form";
 
 type FormProps<T extends FieldValues> = {
   children: ReactNode;
@@ -31,7 +25,7 @@ type FormProps<T extends FieldValues> = {
   onSubmit: SubmitHandler<T>;
   slotProps?: {
     submitButtonProps?: ButtonProps;
-    resetButtonProps?: Partial<IconButtonProps>;
+    resetButtonProps?: Partial<ButtonProps>;
     formContainerProps?: Partial<typeof Grid>;
   };
   showResetButton?: boolean;
@@ -88,13 +82,15 @@ const Form = <T extends FieldValues>({
 
         {showResetButton && !readOnly && (
           <Grid size={{ xs: 12 }}>
-            <IconButton
+            <Button
               onClick={handleResetForm}
-              color="secondary"
+              color="warning"
+              variant="outlined"
+              startIcon={<RestartAltOutlinedIcon />}
               {...slotProps?.resetButtonProps}
             >
-              <RestartAltOutlinedIcon />
-            </IconButton>
+              {d.resetForm}
+            </Button>
           </Grid>
         )}
 

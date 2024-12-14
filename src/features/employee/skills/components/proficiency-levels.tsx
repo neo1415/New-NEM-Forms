@@ -19,6 +19,7 @@ const ProficiencyLevels = () => {
           name="proficiencyLevels.projectManagement"
           options={proficiencyLevelsQuery.data}
           textFieldProps={{ label: d.projectManagement }}
+          loading={proficiencyLevelsQuery.isLoading}
         />
       </Grid>
       <Grid size={{ xs: 2.4 }}>
@@ -26,6 +27,7 @@ const ProficiencyLevels = () => {
           name="proficiencyLevels.communication"
           options={proficiencyLevelsQuery.data}
           textFieldProps={{ label: d.communication }}
+          loading={proficiencyLevelsQuery.isLoading}
         />
       </Grid>
       <Grid size={{ xs: 2.4 }}>
@@ -33,6 +35,7 @@ const ProficiencyLevels = () => {
           name="proficiencyLevels.technicalSkills"
           options={proficiencyLevelsQuery.data}
           textFieldProps={{ label: d.technicalSkills }}
+          loading={proficiencyLevelsQuery.isLoading}
         />
       </Grid>
       <Grid size={{ xs: 2.4 }}>
@@ -40,6 +43,7 @@ const ProficiencyLevels = () => {
           name="proficiencyLevels.leadership"
           options={proficiencyLevelsQuery.data}
           textFieldProps={{ label: d.leadership }}
+          loading={proficiencyLevelsQuery.isLoading}
         />
       </Grid>
       <Grid size={{ xs: 2.4 }}>
@@ -47,6 +51,7 @@ const ProficiencyLevels = () => {
           name="proficiencyLevels.problemSolving"
           options={proficiencyLevelsQuery.data}
           textFieldProps={{ label: d.problemSolving }}
+          loading={proficiencyLevelsQuery.isLoading}
         />
       </Grid>
     </>

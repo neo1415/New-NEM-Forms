@@ -1,4 +1,6 @@
 import { References } from "@/features/employee/additional-info/components/references";
+
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import { useStore } from "@/features/employee/additional-info/hooks/useStore";
 import {
   defaultValues,
@@ -63,6 +65,9 @@ const Provider = ({ readOnly }: ProviderProps) => {
   return (
     <Form
       submitButtonText={d.nextStep}
+      slotProps={{
+        submitButtonProps: { startIcon: <ArrowForwardIosRoundedIcon /> },
+      }}
       schema={schema}
       values={formData}
       defaultValues={defaultValues}

@@ -1,4 +1,6 @@
 import { Form } from "@/features/form/components/form";
+
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import { DatePicker } from "@/features/form/components/controllers/date-picker";
 import { TextField } from "@/features/form/components/controllers/text-field";
 import {
@@ -113,6 +115,9 @@ const Provider = ({ readOnly }: ProviderProps) => {
   return (
     <Form
       submitButtonText={d.nextStep}
+      slotProps={{
+        submitButtonProps: { startIcon: <ArrowForwardIosRoundedIcon /> },
+      }}
       schema={schema}
       values={formData}
       defaultValues={defaultValues}

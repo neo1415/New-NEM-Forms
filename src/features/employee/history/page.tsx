@@ -1,4 +1,5 @@
 import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 
 import { Form } from "@/features/form/components/form";
 import { TextField } from "@/features/form/components/controllers/text-field";
@@ -95,6 +96,9 @@ const Provider = ({ readOnly }: ProviderProps) => {
   return (
     <Form
       submitButtonText={d.nextStep}
+      slotProps={{
+        submitButtonProps: { startIcon: <ArrowForwardIosRoundedIcon /> },
+      }}
       schema={schema}
       values={formData}
       defaultValues={defaultValues}

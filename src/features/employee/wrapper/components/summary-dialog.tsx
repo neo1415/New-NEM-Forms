@@ -1,4 +1,6 @@
 import { useEmployeeAdditionalInfoStore } from "@/features/employee/additional-info/hooks/useStore";
+
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { EmployeeAdditionalInfo } from "@/features/employee/additional-info/page";
 import { useEmployeeHistoryStore } from "@/features/employee/history/hooks/useStore";
 import { EmployeeHistory } from "@/features/employee/history/page";
@@ -15,6 +17,7 @@ import { getErrorMessage } from "@/utils/getErrorMessage";
 import { showSnack } from "@/utils/showSnack";
 import { LoadingButton } from "@mui/lab";
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,9 +25,10 @@ import {
   Divider,
 } from "@mui/material";
 import { FormEvent } from "react";
+import { d } from "@/utils/dictionary";
 
 const SummaryDialog = () => {
-  const { summaryDialogOpen } = useStore();
+  const { summaryDialogOpen, updateSummaryDialogOpen } = useStore();
   const createMutation = useCreate();
 
   const { formData: employeePersonalInfoFormData } =
@@ -43,11 +47,17 @@ const SummaryDialog = () => {
     ...employeeReviewFormData,
   };
 
+  const handleClose = () => {
+    if (!createMutation.isPending) {
+      updateSummaryDialogOpen(false);
+    }
+  };
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     try {
       schema.parse(allFormData);
-      createMutation.mutate();
+      createMutation.mutate(undefined, { onSuccess: handleClose });
     } catch (e) {
       showSnack(getErrorMessage(e), "error");
     }
@@ -59,24 +69,33 @@ const SummaryDialog = () => {
       component="form"
       onSubmit={onSubmit}
       fullWidth
-      maxWidth="lg"
+      maxWidth="md"
+      onClose={handleClose}
     >
-      <DialogTitle variant="h5">Summary</DialogTitle>
-      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <DialogTitle variant="h5">{d.confirmInformation}</DialogTitle>
+      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         <EmployeePersonalInfo readOnly />
-        <Divider variant="middle" />
+        <Divider />
         <EmployeeHistory readOnly />
-        <Divider variant="middle" />
+        <Divider />
         <EmployeeSkills readOnly />
-        <Divider variant="middle" />
+        <Divider />
         <EmployeeAdditionalInfo readOnly />
-        <Divider variant="middle" />
+        <Divider />
         <EmployeeReview readOnly />
-        <Divider variant="middle" />
+        <Divider />
       </DialogContent>
       <DialogActions>
-        <LoadingButton type="submit" loading={createMutation.isPending}>
-          Submit
+        <Button onClick={handleClose} color="inherit">
+          {d.close}
+        </Button>
+        <LoadingButton
+          type="submit"
+          loading={createMutation.isPending}
+          variant="contained"
+          startIcon={<SendOutlinedIcon />}
+        >
+          {d.submit}
         </LoadingButton>
       </DialogActions>
     </Dialog>
