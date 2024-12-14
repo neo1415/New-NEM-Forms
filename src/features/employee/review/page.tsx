@@ -18,13 +18,11 @@ import { SubmitHandler } from "react-hook-form";
 const Page = () => {
   return (
     <>
+    {check it is correct and finalize dropzone}
       <Grid size={{ xs: 6 }}>
         <Dropzone<Schema>
-          {make these dropzones better and finish}
           name="resumeFile"
-          accept={{
-            "application/pdf": [".pdf"],
-          }}
+          acceptedFileTypes={["pdf"]}
           label={d.uploadPDF}
           maxSize={5 * 1024 * 1024}
         />
@@ -32,11 +30,8 @@ const Page = () => {
 
       <Grid size={{ xs: 6 }}>
         <Dropzone<Schema>
-          name="portfolioZi"
-          accept={{
-            "application/zip": [".zip"],
-            "application/x-zip-compressed": [".zip"],
-          }}
+          name="portfolioFile"
+          acceptedFileTypes={["zip"]}
           label={d.uploadZIP}
           maxSize={5 * 1024 * 1024}
         />

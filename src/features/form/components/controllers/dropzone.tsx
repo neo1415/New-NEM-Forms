@@ -40,31 +40,49 @@ const FilePreview = ({ file }: { file: File }) => {
   );
 };
 
-type DropzoneBaseProps = Omit<DropzoneOptions, "onDrop" | "accept"> & {
+type AcceptedFileType = "pdf" | "zip";
+
+type DropzoneBaseProps = Omit<DropzoneOptions, "onDrop"> & {
   onChange: (file: File | null) => void;
   value: File | null;
   error?: { message?: string };
   label?: string;
   ref?: Ref<HTMLDivElement>;
+  acceptedFileTypes: AcceptedFileType[];
 };
 
-type DropzoneProps<T extends FieldValues> = Omit<
-  DropzoneOptions,
-  "onDrop" | "accept"
-> & {
+type DropzoneProps<T extends FieldValues> = Omit<DropzoneOptions, "onDrop"> & {
   name: Path<T>;
   label?: string;
   sx?: SxProps<Theme>;
+  acceptedFileTypes: AcceptedFileType[];
 };
 
 const DropzoneBase = forwardRef<HTMLDivElement, DropzoneBaseProps>(
-  ({ onChange, value, error, label, ...dropzoneProps }, ref) => {
+  (
+    { onChange, value, error, label, acceptedFileTypes, ...dropzoneProps },
+    ref
+  ) => {
+    const getAcceptObject = () => {
+      const acceptObject: Record<string, string[]> = {};
+
+      acceptedFileTypes.forEach((type) => {
+        switch (type) {
+          case "pdf":
+            acceptObject["application/pdf"] = [".pdf"];
+            break;
+          case "zip":
+            acceptObject["application/zip"] = [".zip"];
+            break;
+        }
+      });
+
+      return acceptObject;
+    };
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       ...dropzoneProps,
-      accept: {
-        "application/pdf": [".pdf"],
-        "application/zip": [".zip"],
-      },
+      accept: getAcceptObject(),
       maxFiles: 1,
       multiple: false,
       onDrop: (acceptedFiles) => {
@@ -116,7 +134,9 @@ const DropzoneBase = forwardRef<HTMLDivElement, DropzoneBaseProps>(
               <Typography color={isDragActive ? "primary" : "textSecondary"}>
                 {isDragActive
                   ? "Drop the file here..."
-                  : "Drag 'n' drop a file here, or click to select file (PDF or ZIP only)"}
+                  : `Drag 'n' drop a file here, or click to select file (${acceptedFileTypes
+                      .map((t) => t.toUpperCase())
+                      .join(" or ")} only)`}
               </Typography>
             )}
             {value && (
