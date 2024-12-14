@@ -31,7 +31,7 @@ const useCreate = () => {
       showSnack("Successful");
     },
     onError: (error) => {
-      showSnack(getErrorMessage(error), "error");
+      showSnack(getErrorMessage(error), { variant: "error" });
     },
   });
 };

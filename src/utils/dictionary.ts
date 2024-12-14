@@ -72,6 +72,13 @@ const d = {
   cancel: "Cancel",
   uploadPDF: "Upload PDF",
   uploadZIP: "Upload ZIP",
+  portfolio: "Portfolio",
+  resume: "Resume",
+  newEmployee: "New Employee",
+  dashboard: "Dashboard",
+  system: "System",
+  dark: "Dark",
+  light: "Light",
 } as const;
 
 export { d };

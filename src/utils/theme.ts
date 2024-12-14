@@ -2,7 +2,9 @@ import { Link } from "@/components/link";
 import { createTheme } from "@mui/material";
 
 const theme = createTheme({
-  palette: { mode: "dark" },
+  colorSchemes: {
+    dark: true,
+  },
   components: {
     MuiLink: {
       defaultProps: {

@@ -2,6 +2,7 @@ import { Form } from "@/features/form/components/form";
 
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 
+import { useTermsAndConditions } from "@/features/employee/review/hooks/useQueries";
 import { useStore } from "@/features/employee/review/hooks/useStore";
 import {
   defaultValues,
@@ -10,33 +11,32 @@ import {
 } from "@/features/employee/review/types/schema";
 import { useEmployeeWrapperStore } from "@/features/employee/wrapper/hooks/useStore";
 import { Checkbox } from "@/features/form/components/controllers/checkbox";
-import { Dropzone } from "@/features/form/components/controllers/dropzone";
 import { d } from "@/utils/dictionary";
+import { Box, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { SubmitHandler } from "react-hook-form";
 
 const Page = () => {
+  const termsAndConditionsQuery = useTermsAndConditions();
+
   return (
     <>
-    {check it is correct and finalize dropzone}
-      <Grid size={{ xs: 6 }}>
-        <Dropzone<Schema>
-          name="resumeFile"
-          acceptedFileTypes={["pdf"]}
-          label={d.uploadPDF}
-          maxSize={5 * 1024 * 1024}
-        />
+      <Grid size={{ xs: 12 }}>
+        <Stack
+          sx={{
+            gap: 2,
+            maxHeight: 400,
+            overflow: "scroll",
+          }}
+        >
+          {termsAndConditionsQuery.data?.map((item) => (
+            <Box key={item.title}>
+              <Typography variant="h6">{item.title}</Typography>
+              <Typography variant="body1">{item.content}</Typography>
+            </Box>
+          ))}
+        </Stack>
       </Grid>
-
-      <Grid size={{ xs: 6 }}>
-        <Dropzone<Schema>
-          name="portfolioFile"
-          acceptedFileTypes={["zip"]}
-          label={d.uploadZIP}
-          maxSize={5 * 1024 * 1024}
-        />
-      </Grid>
-
       <Grid size={{ xs: 12 }}>
         <Checkbox<Schema>
           name="termsAndConditionsAccepted"

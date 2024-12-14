@@ -51,18 +51,30 @@ const Stepper = () => {
 
   const steps = [
     {
-      href: "/personal-info",
+      href: "/employee/personal-info",
       label: d.personalInfo,
       success: employeePersonaInfoSuccess,
     },
-    { href: "/history", label: d.history, success: employeeHistorySuccess },
-    { href: "/skills", label: d.skills, success: employeeSkillsSuccess },
     {
-      href: "/additional-info",
+      href: "/employee/history",
+      label: d.history,
+      success: employeeHistorySuccess,
+    },
+    {
+      href: "/employee/skills",
+      label: d.skills,
+      success: employeeSkillsSuccess,
+    },
+    {
+      href: "/employee/additional-info",
       label: d.additionalInfo,
       success: employeeAdditionalInfoSuccess,
     },
-    { href: "/review", label: d.review, success: employeeReviewSuccess },
+    {
+      href: "/employee/review",
+      label: d.review,
+      success: employeeReviewSuccess,
+    },
   ];
 
   const activeStep = steps.findIndex((item) => item.href === pathname);

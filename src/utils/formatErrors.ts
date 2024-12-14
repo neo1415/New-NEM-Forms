@@ -1,5 +1,6 @@
 import { d } from "@/utils/dictionary";
 import { FieldErrors } from "react-hook-form";
+import { humanizeFieldName } from "@/utils/humanizeFieldName";
 
 type ErrorMessage = {
   field: string;
@@ -7,13 +8,6 @@ type ErrorMessage = {
   message: string | undefined;
   category?: string;
   index?: number;
-};
-
-const humanizeFieldName = (field: string): string => {
-  return field
-    .split(/(?=[A-Z])/)
-    .join(" ")
-    .replace(/^./, (str) => str.toUpperCase());
 };
 
 const formatErrors = <T extends Record<string, unknown>>(

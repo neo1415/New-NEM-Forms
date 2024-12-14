@@ -58,8 +58,8 @@ const SummaryDialog = () => {
     try {
       schema.parse(allFormData);
       createMutation.mutate(undefined, { onSuccess: handleClose });
-    } catch (e) {
-      showSnack(getErrorMessage(e), "error");
+    } catch (error) {
+      showSnack(getErrorMessage(error), { variant: "error" });
     }
   };
 

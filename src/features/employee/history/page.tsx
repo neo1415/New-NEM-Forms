@@ -90,7 +90,7 @@ const Provider = ({ readOnly }: ProviderProps) => {
 
   const handleSubmit: SubmitHandler<Schema> = (data) => {
     updateFormData(data);
-    navigate("/skills");
+    navigate("/employee/skills");
   };
 
   return (
