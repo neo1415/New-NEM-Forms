@@ -62,6 +62,16 @@ const d = {
   confirmInformation: "Confirm Information",
   close: "Close",
   youMustAcceptTermsAndConditions: "You must accept terms and conditions",
+  invalidFormData: "Invalid Form Data",
+  defaultLoading: "Loading...",
+  saveAndContinue: "Save and Continue",
+  confirmAction: "Confirm Action",
+  pleaseConfirmYouWouldLikeToProcess:
+    "Please confirm you would like to proceed",
+  ok: "Ok",
+  cancel: "Cancel",
+  uploadPDF: "Upload PDF",
+  uploadZIP: "Upload ZIP",
 } as const;
 
 export { d };

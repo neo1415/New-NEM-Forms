@@ -57,7 +57,7 @@ const defaultValues: Schema = {
 export {
   defaultValues,
   schema,
-  schema as skillsSchema,
+  schema as employeeSkillsSchema,
   type Schema,
   CoreCompetencyEnum,
 };

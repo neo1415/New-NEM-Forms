@@ -85,7 +85,7 @@ const Provider = ({ readOnly }: ProviderProps) => {
 
   return (
     <Form
-      submitButtonText={d.nextStep}
+      submitButtonText={d.saveAndContinue}
       slotProps={{
         submitButtonProps: { startIcon: <ArrowForwardIosRoundedIcon /> },
       }}

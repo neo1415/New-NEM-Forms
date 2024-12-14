@@ -1,3 +1,4 @@
+import { ConfirmProvider } from "@/features/confirm/components/provider";
 import { RoutesWrapper } from "@/routes";
 import { theme } from "@/utils/theme";
 import { setupZodErrors } from "@/utils/zodConfig";
@@ -17,9 +18,11 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <CssBaseline />
-          <SnackbarProvider />
-          <RoutesWrapper />
+          <ConfirmProvider>
+            <CssBaseline />
+            <SnackbarProvider />
+            <RoutesWrapper />
+          </ConfirmProvider>
         </LocalizationProvider>
       </ThemeProvider>
     </QueryClientProvider>

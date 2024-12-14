@@ -1,28 +1,22 @@
+import { Stepper } from "@/features/employee/wrapper/components/stepper";
 import { SummaryDialog } from "@/features/employee/wrapper/components/summary-dialog";
-import { Box, Container, Paper } from "@mui/material";
+import { Container, Divider, Paper } from "@mui/material";
 import { Outlet } from "react-router";
 
 const Page = () => {
   return (
-    <Box
+    <Container
       sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        padding: 10,
       }}
+      component={Paper}
+      maxWidth="md"
     >
-      <Container
-        sx={{
-          padding: 10,
-        }}
-        component={Paper}
-        maxWidth="lg"
-      >
-        <SummaryDialog />
-        <Outlet />
-      </Container>
-    </Box>
+      <SummaryDialog />
+      <Stepper />
+      <Divider sx={{ marginY: 2 }} />
+      <Outlet />
+    </Container>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useFormContext } from "@/features/form/hooks/useFormContext";
+import { d } from "@/utils/dictionary";
 import {
   AutocompleteValue,
   Autocomplete as MuiAutocomplete,
@@ -36,7 +37,7 @@ const Autocomplete = forwardRef(
   <T extends FieldValues, Multiple extends boolean = false>(
     {
       name,
-      options = [],
+      options,
       textFieldProps,
       onOptionSelect,
       multiple = false as Multiple,
@@ -61,7 +62,7 @@ const Autocomplete = forwardRef(
             false
           > => {
             if (multiple) {
-              return options.filter((option) =>
+              return (options ?? []).filter((option) =>
                 Array.isArray(value) ? value.includes(option.value) : false
               ) as AutocompleteValue<
                 AutocompleteOption,
@@ -70,7 +71,7 @@ const Autocomplete = forwardRef(
                 false
               >;
             }
-            return (options.find((option) => option.value === value) ||
+            return ((options ?? []).find((option) => option.value === value) ||
               null) as AutocompleteValue<
               AutocompleteOption,
               Multiple,
@@ -84,7 +85,7 @@ const Autocomplete = forwardRef(
               {...autocompleteProps}
               {...field}
               multiple={multiple}
-              options={options}
+              options={options ?? []}
               value={getValue()}
               readOnly={readOnly}
               id={name}
@@ -118,6 +119,7 @@ const Autocomplete = forwardRef(
                   inputRef={ref}
                   error={!!error}
                   helperText={error?.message}
+                  placeholder={!options ? d.defaultLoading : ""}
                   slotProps={{
                     input: {
                       ...params.InputProps,

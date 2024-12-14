@@ -29,4 +29,4 @@ const defaultValues: Schema = {
   termsAndConditionsAccepted: false,
 };
 
-export { defaultValues, schema, schema as reviewSchema, type Schema };
+export { defaultValues, schema, schema as employeeReviewSchema, type Schema };

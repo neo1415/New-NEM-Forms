@@ -56,6 +56,6 @@ export {
   defaultValues,
   ReasonForLeavingEnum,
   schema,
-  schema as historySchema,
+  schema as employeeHistorySchema,
   type Schema,
 };

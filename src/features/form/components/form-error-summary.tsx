@@ -37,7 +37,6 @@ const FormErrorSummary = () => {
 
   const getDisplayLabel = (label: string, field: string) => {
     if (label.toLowerCase() === "root") {
-      // Extract parent object key from the field path
       const parentKey = field.split(".root")[0].split(".").pop() || field;
       return d[parentKey as keyof typeof d] || humanizeFieldName(parentKey);
     }

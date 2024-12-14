@@ -1,14 +1,49 @@
 import { useFormContext } from "@/features/form/hooks/useFormContext";
-import { Box, ButtonBase, Typography, SxProps, Theme } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import {
+  Box,
+  ButtonBase,
+  IconButton,
+  SxProps,
+  Theme,
+  Typography,
+} from "@mui/material";
 import { forwardRef, ReactElement, Ref } from "react";
+import { DropzoneOptions, useDropzone } from "react-dropzone";
 import { Controller, FieldValues, Path } from "react-hook-form";
-import { useDropzone, DropzoneOptions } from "react-dropzone";
+
+const FilePreview = ({ file }: { file: File }) => {
+  const getFileIcon = () => {
+    if (file.type === "application/pdf") {
+      return <PictureAsPdfIcon color="primary" sx={{ fontSize: 40 }} />;
+    }
+    return <InsertDriveFileIcon color="primary" sx={{ fontSize: 40 }} />;
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 1,
+        p: 1,
+      }}
+    >
+      {getFileIcon()}
+      <Typography variant="caption" noWrap sx={{ maxWidth: 100 }}>
+        {file.name}
+      </Typography>
+    </Box>
+  );
+};
 
 type DropzoneBaseProps = Omit<DropzoneOptions, "onDrop" | "accept"> & {
-  onChange: (files: File[]) => void;
-  value: File[];
+  onChange: (file: File | null) => void;
+  value: File | null;
   error?: { message?: string };
-  accept?: Record<string, string[]>;
   label?: string;
   ref?: Ref<HTMLDivElement>;
 };
@@ -18,18 +53,31 @@ type DropzoneProps<T extends FieldValues> = Omit<
   "onDrop" | "accept"
 > & {
   name: Path<T>;
-  accept?: Record<string, string[]>;
   label?: string;
   sx?: SxProps<Theme>;
 };
 
 const DropzoneBase = forwardRef<HTMLDivElement, DropzoneBaseProps>(
-  ({ onChange, value, error, accept, label, ...dropzoneProps }, ref) => {
+  ({ onChange, value, error, label, ...dropzoneProps }, ref) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       ...dropzoneProps,
-      accept,
-      onDrop: onChange,
+      accept: {
+        "application/pdf": [".pdf"],
+        "application/zip": [".zip"],
+      },
+      maxFiles: 1,
+      multiple: false,
+      onDrop: (acceptedFiles) => {
+        if (acceptedFiles.length > 0) {
+          onChange(acceptedFiles[0]);
+        }
+      },
     });
+
+    const handleRemoveFile = (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onChange(null);
+    };
 
     const defaultSx: SxProps<Theme> = {
       width: "100%",
@@ -67,15 +115,44 @@ const DropzoneBase = forwardRef<HTMLDivElement, DropzoneBaseProps>(
             {!dropzoneProps.disabled && (
               <Typography color={isDragActive ? "primary" : "textSecondary"}>
                 {isDragActive
-                  ? "Drop the files here..."
-                  : "Drag 'n' drop files here, or click to select files"}
+                  ? "Drop the file here..."
+                  : "Drag 'n' drop a file here, or click to select file (PDF or ZIP only)"}
               </Typography>
             )}
-            {value?.length > 0 && (
-              <Typography>
-                Selected files:{" "}
-                {value.map((file: File) => file.name).join(", ")}
-              </Typography>
+            {value && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  mt: 2,
+                  position: "relative",
+                  "&:hover .remove-button": {
+                    opacity: 1,
+                  },
+                }}
+              >
+                <FilePreview file={value} />
+                {!dropzoneProps.disabled && (
+                  <IconButton
+                    className="remove-button"
+                    size="small"
+                    onClick={handleRemoveFile}
+                    sx={{
+                      position: "absolute",
+                      top: -8,
+                      right: -8,
+                      bgcolor: "background.paper",
+                      opacity: 0,
+                      transition: "opacity 0.2s",
+                      "&:hover": {
+                        bgcolor: "background.paper",
+                      },
+                    }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                )}
+              </Box>
             )}
           </Box>
         </ButtonBase>
@@ -91,7 +168,7 @@ const DropzoneBase = forwardRef<HTMLDivElement, DropzoneBaseProps>(
 
 const Dropzone = forwardRef(
   <T extends FieldValues>(
-    { name, accept, label, sx, ...dropzoneProps }: DropzoneProps<T>,
+    { name, label, ...dropzoneProps }: DropzoneProps<T>,
     ref: Ref<HTMLDivElement>
   ) => {
     const { control, readOnly } = useFormContext<T>();
@@ -105,7 +182,6 @@ const Dropzone = forwardRef(
             onChange={onChange}
             value={value}
             error={error}
-            accept={accept}
             disabled={readOnly}
             label={label}
             ref={ref}
@@ -118,8 +194,5 @@ const Dropzone = forwardRef(
 ) as <T extends FieldValues>(
   props: DropzoneProps<T> & { ref?: Ref<HTMLDivElement> }
 ) => ReactElement;
-
-DropzoneBase.displayName = "DropzoneBase";
-Dropzone.displayName = "Dropzone";
 
 export { Dropzone };

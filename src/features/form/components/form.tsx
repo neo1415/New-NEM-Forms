@@ -4,11 +4,18 @@ import { FormErrorSummary } from "@/features/form/components/form-error-summary"
 import { d } from "@/utils/dictionary";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
-import { Button, ButtonProps, Typography } from "@mui/material";
+import {
+  Button,
+  ButtonProps,
+  IconButton,
+  IconButtonProps,
+  Typography,
+} from "@mui/material";
 import { ReactNode } from "react";
 import {
   DefaultValues,
   FieldValues,
+  SubmitErrorHandler,
   SubmitHandler,
   useForm,
   UseFormProps,
@@ -17,15 +24,17 @@ import { ZodSchema } from "zod";
 
 import { FormContext } from "@/features/form/types/formContext";
 import { FormProvider } from "react-hook-form";
+import { useConfirm } from "@/features/confirm/hooks/useContext";
 
 type FormProps<T extends FieldValues> = {
   children: ReactNode;
   schema: ZodSchema<T>;
   title?: string;
   onSubmit: SubmitHandler<T>;
+  onError?: SubmitErrorHandler<T>;
   slotProps?: {
     submitButtonProps?: ButtonProps;
-    resetButtonProps?: Partial<ButtonProps>;
+    resetButtonProps?: Partial<IconButtonProps>;
     formContainerProps?: Partial<typeof Grid>;
   };
   showResetButton?: boolean;
@@ -41,6 +50,7 @@ const Form = <T extends FieldValues>({
   schema,
   title,
   onSubmit,
+  onError,
   slotProps,
   showResetButton = true,
   mode = "all",
@@ -49,6 +59,8 @@ const Form = <T extends FieldValues>({
   submitButtonText,
   readOnly = false,
 }: FormProps<T>) => {
+  const confirm = useConfirm();
+
   const form = useForm<T>({
     mode,
     values,
@@ -56,8 +68,14 @@ const Form = <T extends FieldValues>({
     resolver: zodResolver(schema),
   });
 
-  const handleResetForm = () => {
+  const handleConfirm = () => {
     form.reset(defaultValues);
+  };
+
+  const handleResetFormClick = async () => {
+    await confirm({
+      onConfirm: handleConfirm,
+    });
   };
 
   const extendedForm: FormContext<T> = {
@@ -71,26 +89,28 @@ const Form = <T extends FieldValues>({
         container
         spacing={2}
         component="form"
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
         {...slotProps?.formContainerProps}
       >
         {title && (
-          <Grid size={{ xs: 12 }}>
+          <Grid
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            size={{ xs: 12 }}
+          >
             <Typography variant="h6">{title}</Typography>
-          </Grid>
-        )}
-
-        {showResetButton && !readOnly && (
-          <Grid size={{ xs: 12 }}>
-            <Button
-              onClick={handleResetForm}
-              color="warning"
-              variant="outlined"
-              startIcon={<RestartAltOutlinedIcon />}
-              {...slotProps?.resetButtonProps}
-            >
-              {d.resetForm}
-            </Button>
+            {showResetButton && !readOnly && (
+              <IconButton
+                onClick={handleResetFormClick}
+                color="inherit"
+                {...slotProps?.resetButtonProps}
+              >
+                <RestartAltOutlinedIcon />
+              </IconButton>
+            )}
           </Grid>
         )}
 

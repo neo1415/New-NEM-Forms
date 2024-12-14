@@ -20,28 +20,25 @@ const Page = () => {
     <>
       <Grid size={{ xs: 6 }}>
         <Dropzone<Schema>
-          name="portfolioFiles"
+          {make these dropzones better and finish}
+          name="resumeFile"
           accept={{
             "application/pdf": [".pdf"],
-            "image/jpeg": [".jpg", ".jpeg"],
-            "image/png": [".png"],
           }}
-          label={d.uploadPortfolioFiles}
-          maxFiles={3}
+          label={d.uploadPDF}
           maxSize={5 * 1024 * 1024}
         />
       </Grid>
 
       <Grid size={{ xs: 6 }}>
         <Dropzone<Schema>
-          name="resumeFile"
+          name="portfolioZi"
           accept={{
-            "application/pdf": [".pdf"],
+            "application/zip": [".zip"],
+            "application/x-zip-compressed": [".zip"],
           }}
-          label={d.uploadResume}
-          maxFiles={1}
+          label={d.uploadZIP}
           maxSize={5 * 1024 * 1024}
-          multiple={false}
         />
       </Grid>
 
@@ -60,11 +57,16 @@ type ProviderProps = {
 };
 const Provider = ({ readOnly }: ProviderProps) => {
   const { updateSummaryDialogOpen } = useEmployeeWrapperStore();
-  const { formData, updateFormData } = useStore();
+  const { formData, updateFormData, updateIsSubmitted } = useStore();
 
   const handleSubmit: SubmitHandler<Schema> = (data) => {
     updateFormData(data);
     updateSummaryDialogOpen(true);
+    updateIsSubmitted(true);
+  };
+
+  const handleError = () => {
+    updateIsSubmitted(true);
   };
 
   return (
@@ -76,6 +78,7 @@ const Provider = ({ readOnly }: ProviderProps) => {
       values={formData}
       defaultValues={defaultValues}
       onSubmit={handleSubmit}
+      onError={handleError}
       readOnly={readOnly}
       title={d.review}
     >

@@ -24,8 +24,13 @@ type Schema = z.infer<typeof schema>;
 const defaultValues: Schema = {
   availabilityToStart: new Date(),
   references: [],
-  salaryExpectations: 30000,
+  salaryExpectations: 100000,
   portfolioLink: "",
 };
 
-export { schema, schema as additionalInfoSchema, type Schema, defaultValues };
+export {
+  schema,
+  schema as employeeAdditionalInfoSchema,
+  type Schema,
+  defaultValues,
+};
