@@ -1,4 +1,4 @@
-import { MyForm } from "@/features/layout/components/foo";
+import { MyForm } from "@/features/layout/components/my-form";
 import { useStore } from "@/features/layout/hooks/useStore";
 import { DRAWER_WIDTH } from "@/features/layout/utils/constants";
 import { d } from "@/utils/dictionary";
