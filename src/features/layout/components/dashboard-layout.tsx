@@ -1,4 +1,4 @@
-import { MyForm } from "@/features/layout/components/my-form";
+import { ThemeToggle } from "@/features/layout/components/theme-toggle";
 import { useStore } from "@/features/layout/hooks/useStore";
 import { DRAWER_WIDTH } from "@/features/layout/utils/constants";
 import { d } from "@/utils/dictionary";
@@ -77,7 +77,7 @@ const DashboardLayout = () => {
             <Typography variant="h6" noWrap component="div">
               {d.dashboard}
             </Typography>
-            <MyForm />
+            <ThemeToggle />
           </Stack>
         </Toolbar>
       </MuiAppBar>
