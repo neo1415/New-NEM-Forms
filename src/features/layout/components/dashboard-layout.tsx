@@ -110,7 +110,7 @@ const DashboardLayout = () => {
         <Divider />
         <List>
           <ListItem disablePadding>
-            <ListItemButton href="/employee">
+            <ListItemButton href="/employee/personal-info">
               <ListItemIcon>
                 <BadgeOutlinedIcon />
               </ListItemIcon>
@@ -139,9 +139,10 @@ const DashboardLayout = () => {
         }}
       >
         <Box sx={{ ...theme.mixins.toolbar }} />
-        <Container sx={{ paddingY: 3 }} component={Paper} maxWidth="xl">
+
+        <Paper sx={{ padding: 3 }}>
           <Outlet />
-        </Container>
+        </Paper>
       </Box>
     </Box>
   );

@@ -2,7 +2,7 @@ import { d } from "@/utils/dictionary";
 import { FieldErrors } from "react-hook-form";
 import { humanizeFieldName } from "@/utils/humanizeFieldName";
 
-type ErrorMessage = {
+export type ErrorMessage = {
   field: string;
   label: string;
   message: string | undefined;
@@ -10,13 +10,19 @@ type ErrorMessage = {
   index?: number;
 };
 
-const formatErrors = <T extends Record<string, unknown>>(
+type ErrorValue = {
+  message?: string;
+  type?: string;
+  ref?: unknown;
+} & Record<string, unknown>;
+
+export const formatErrors = <T extends Record<string, unknown>>(
   errors: FieldErrors<T>
 ): ErrorMessage[] => {
   const formattedErrors: ErrorMessage[] = [];
 
   const processErrors = (
-    obj: any,
+    obj: FieldErrors<T> | ErrorValue | Array<ErrorValue>,
     parentField = "",
     parentLabel = ""
   ): void => {
@@ -45,16 +51,17 @@ const formatErrors = <T extends Record<string, unknown>>(
           }
         });
       } else if (value && typeof value === "object") {
-        if (value.message) {
+        const errorValue = value as ErrorValue;
+        if (errorValue.message) {
           formattedErrors.push({
             field: currentField,
             label: d[key as keyof typeof d] || humanizeFieldName(key),
-            message: value.message,
+            message: errorValue.message,
             category: isArrayField ? categoryLabel : undefined,
             index: arrayIndex,
           });
         } else {
-          processErrors(value, currentField, parentLabel);
+          processErrors(errorValue, currentField, parentLabel);
         }
       }
     });
@@ -78,5 +85,3 @@ const formatErrors = <T extends Record<string, unknown>>(
     return 0;
   });
 };
-
-export { formatErrors };

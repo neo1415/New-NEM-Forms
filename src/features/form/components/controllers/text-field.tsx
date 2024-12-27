@@ -57,6 +57,7 @@ const createNumberFormat = (
         <Component
           {...other}
           {...formatConfig}
+          format={formatConfig.format ?? ""}
           getInputRef={ref}
           onValueChange={handleValueChange}
         />

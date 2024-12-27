@@ -1,18 +1,18 @@
-import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
-import { TextField } from "@/features/form/components/controllers/text-field";
 import {
   useSkillCategories,
   useSkills,
   useSkillSubcategories,
 } from "@/features/employee/skills/hooks/useQueries";
+import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
+import { TextField } from "@/features/form/components/controllers/text-field";
 
 import { Schema } from "@/features/employee/skills/types/schema";
+import { useFormContext } from "@/features/form/hooks/useFormContext";
 import { d } from "@/utils/dictionary";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
-import { Chip, IconButton, Typography } from "@mui/material";
+import { Chip, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { UseFieldArrayRemove, useWatch } from "react-hook-form";
-import { useFormContext } from "@/features/form/hooks/useFormContext";
 
 type SkillSetProps = {
   fieldIndex: number;

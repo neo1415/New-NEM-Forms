@@ -1,7 +1,8 @@
 import { d } from "@/utils/dictionary";
-import { formatErrors } from "@/utils/formatErrors";
+import { formatErrors, ErrorMessage } from "@/utils/formatErrors";
 import { Alert, AlertTitle, List, ListItem } from "@mui/material";
 import { useFormState } from "react-hook-form";
+import { humanizeFieldName } from "@/utils/humanizeFieldName";
 
 const FormErrorSummary = () => {
   const { errors, isSubmitted } = useFormState();
@@ -12,9 +13,7 @@ const FormErrorSummary = () => {
 
   const handleErrorClick = (field: string) => {
     const cleanField = field.endsWith(".root") ? field.slice(0, -5) : field;
-
     const formFieldName = cleanField.replace(/\[(\d+)\]/g, ".$1");
-    console.log("field", formFieldName);
 
     try {
       const elementById = document.getElementById(formFieldName);
@@ -43,27 +42,23 @@ const FormErrorSummary = () => {
     return label;
   };
 
-  const humanizeFieldName = (field: string): string => {
-    return field
-      .split(/(?=[A-Z])/)
-      .join(" ")
-      .replace(/^./, (str) => str.toUpperCase());
-  };
-
-  const groupedErrors = formattedErrors.reduce((acc, error) => {
-    if (error.category) {
-      if (!acc[error.category]) {
-        acc[error.category] = [];
+  const groupedErrors = formattedErrors.reduce(
+    (acc: Record<string, ErrorMessage[]>, error) => {
+      if (error.category) {
+        if (!acc[error.category]) {
+          acc[error.category] = [];
+        }
+        acc[error.category].push(error);
+      } else {
+        if (!acc["general"]) {
+          acc["general"] = [];
+        }
+        acc["general"].push(error);
       }
-      acc[error.category].push(error);
-    } else {
-      if (!acc["general"]) {
-        acc["general"] = [];
-      }
-      acc["general"].push(error);
-    }
-    return acc;
-  }, {} as Record<string, ErrorMessage[]>);
+      return acc;
+    },
+    {}
+  );
 
   return (
     <Alert

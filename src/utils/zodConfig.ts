@@ -39,8 +39,10 @@ const setupZodErrors = () => {
       case "too_big":
         if (issue.type === "date") {
           if (
-            issue.maximum instanceof Date &&
-            issue.maximum.getTime() === new Date().setHours(0, 0, 0, 0)
+            issue.maximum &&
+            typeof issue.maximum === "object" &&
+            (issue.maximum as Date).getTime() ===
+              new Date().setHours(0, 0, 0, 0)
           ) {
             message = "Date cannot be in the future";
           } else {
