@@ -1,0 +1,61 @@
+import { z } from "zod";
+
+export const schema = z.object({
+  itemNumber: z.string().min(1, "Item number is required"),
+  yearOfManufacture: z.string().min(1, "Year of manufacture is required"),
+  make: z.string().min(1, "Make and model is required"),
+  registrationNumber: z.string().min(1, "Registration/Serial number is required"),
+  dateOfPurchase: z.date({
+    required_error: "Date of purchase is required",
+    invalid_type_error: "Invalid date format",
+  }),
+  costPrice: z.number().min(0, "Cost price must be greater than or equal to 0"),
+  deductionForAge: z.number().min(0, "Deduction must be greater than or equal to 0"),
+  sumClaimedPresent: z.number().min(0, "Sum claimed must be greater than or equal to 0"),
+  sumClaimedRepairs: z.number().min(0, "Sum claimed must be greater than or equal to 0"),
+  dateTimeOfLoss: z.date({
+    required_error: "Date and time of loss is required",
+    invalid_type_error: "Invalid date format",
+  }),
+  lastSeenLocation: z.string().min(1, "Last seen location is required"),
+  lossLocation: z.string().min(1, "Loss location is required"),
+  damagedParts: z.string().min(1, "Damaged parts description is required"),
+  inspectionLocation: z.string().min(1, "Inspection location is required"),
+  circumstances: z.string().min(1, "Circumstances are required"),
+  responsibleParties: z.string().optional(),
+  policeInformed: z.enum(["true", "false"]),
+  policeStation: z.string().optional(),
+  recoveryActions: z.string().optional(),
+  isSoleOwner: z.enum(["true", "false"]),
+  ownershipDetails: z.string().optional(),
+  otherInsurance: z.string().optional(),
+  thirdPartyDetails: z.string().optional(),
+});
+
+export type Schema = z.infer<typeof schema>;
+
+export const defaultValues: Schema = {
+  itemNumber: "",
+  yearOfManufacture: "",
+  make: "",
+  registrationNumber: "",
+  dateOfPurchase: new Date(),
+  costPrice: 0,
+  deductionForAge: 0,
+  sumClaimedPresent: 0,
+  sumClaimedRepairs: 0,
+  dateTimeOfLoss: new Date(),
+  lastSeenLocation: "",
+  lossLocation: "",
+  damagedParts: "",
+  inspectionLocation: "",
+  circumstances: "",
+  responsibleParties: "",
+  policeInformed: "false",
+  policeStation: "",
+  recoveryActions: "",
+  isSoleOwner: "true",
+  ownershipDetails: "",
+  otherInsurance: "",
+  thirdPartyDetails: "",
+}; 

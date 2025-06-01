@@ -1,7 +1,7 @@
 import { ThemeToggle } from "@/features/layout/components/theme-toggle";
 import { useStore } from "@/features/layout/hooks/useStore";
 import { DRAWER_WIDTH } from "@/features/layout/utils/constants";
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MenuIcon from "@mui/icons-material/Menu";

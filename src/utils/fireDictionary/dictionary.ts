@@ -1,0 +1,57 @@
+const d = {
+  // Insured Details
+  policyNumber: "Policy Number",
+  periodOfCoverFrom: "Period of Cover From",
+  periodOfCoverTo: "Period of Cover To",
+  insuredName: "Name of Insured",
+  companyName: "Company Name (if applicable)",
+  title: "Title",
+  dateOfBirth: "Date of Birth",
+  gender: "Gender",
+  address: "Address",
+  phone: "Phone",
+  email: "Email",
+  alertPreference: "Alert Preference",
+
+  // Details of Loss
+  premisesAddress: "Full address of premises involved",
+  premisesTelephone: "Telephone",
+  occurrenceDate: "Date of Occurrence",
+  occurrenceTime: "Time",
+  damageDescription: "Description of what happened and resultant damage",
+  premisesPurposePolicy: "Was the premises used for the purpose prescribed in the Policy?",
+  premisesPurposeAtTime: "Purpose the premises was being used for at the time of occurrence",
+  riskElementIntroduced: "Had any element of risk been introduced which was not allowed in the Policy?",
+  riskElementDetails: "Risk element details",
+  fireDiscoveryMeasures: "Measures taken when the Fire was discovered",
+  soleOwner: "Are you the sole owner of the property damaged or destroyed?",
+  otherOwnersDetails: "Other owners name and address",
+  otherInsuranceCover: "Were there any other existing insurance covers on the property?",
+  otherInsurersDetails: "Other insurers name and address",
+  premisesContentValue: "Total value of premises contents at time of occurrence",
+  previousClaims: "Have you previously claimed against any insurer?",
+  previousClaimsDetails: "Previous claims date and amount of loss",
+
+  // Common
+  submit: "Submit",
+  form: "Form",
+  nextStep: "Next Step",
+  errorValidationTitle: "Please Check Your Entries",
+  resetForm: "Reset Form",
+  close: "Close",
+  confirmAction: "Confirm Action",
+  pleaseConfirmYouWouldLikeToProcess: "Please confirm you would like to proceed",
+  ok: "Ok",
+  cancel: "Cancel",
+  review: "Review",
+  invalidFormData: "Invalid Form Data",
+  confirmInformation: "Confirm Information",
+  youMustAcceptTermsAndConditions: "You must accept terms and conditions",
+  iAcceptTermsAndConditions: "I accept the terms and conditions",
+  dataPrivacyNotice: "Data Privacy Notice",
+  dataUsePurpose: "Data will be used solely for business purposes.",
+  dataSecurity: "Data will be secured per NDPR 2019.",
+  dataSharing: "Data will not be shared without consent."
+} as const;
+
+export { d }; 

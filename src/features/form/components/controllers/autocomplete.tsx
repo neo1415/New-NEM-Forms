@@ -1,5 +1,5 @@
 import { useFormContext } from "@/features/form/hooks/useFormContext";
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 import {
   AutocompleteValue,
   Autocomplete as MuiAutocomplete,

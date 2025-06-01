@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid2";
 
 import { FormErrorSummary } from "@/features/form/components/form-error-summary";
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 import {

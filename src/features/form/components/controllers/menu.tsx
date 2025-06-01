@@ -1,9 +1,13 @@
 import { useFormContext } from "@/features/form/hooks/useFormContext";
-import { Box, IconButton, Menu as MuiMenu } from "@mui/material";
+import {
+  Box,
+  Menu as MuiMenu,
+  TextField,
+  Typography,
+} from "@mui/material";
 import MenuItem, {
   MenuItemProps as MuiMenuItemProps,
 } from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
 import { SxProps } from "@mui/material/styles";
 import {
   bindPopover,
@@ -26,6 +30,7 @@ type MenuProps<T extends FieldValues> = Omit<
   "name" | "error" | "value"
 > & {
   name: Path<T>;
+  label?: ReactNode;
   options: Option[];
   MenuItemProps?: MuiMenuItemProps;
   className?: string;
@@ -42,13 +47,13 @@ const Menu = forwardRef(
       className,
       renderLabel,
       sx,
+      label,
       onChange,
       ...props
     }: MenuProps<T>,
     ref: Ref<HTMLLIElement>
   ) => {
     const state = usePopupState({ variant: "popover" });
-
     const { control } = useFormContext<T>();
 
     return (
@@ -76,6 +81,7 @@ const Menu = forwardRef(
                   onClick={(event) => {
                     field.onChange(option.value);
                     onChange?.(event);
+                    state.close();
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -97,9 +103,22 @@ const Menu = forwardRef(
                 </MenuItem>
               ))}
             </MuiMenu>
-            <IconButton {...bindTrigger(state)}>
-              {options?.find((item) => item.value === field.value)?.leftIcon}
-            </IconButton>
+            <span {...bindTrigger(state)}>
+              <TextField
+                fullWidth
+                label={label as string}
+                value={
+                  options.find((item) => item.value === field.value)?.label ||
+                  ""
+                }
+                variant="outlined"
+                onClick={() => state.open()}
+                InputProps={{
+                  readOnly: true,
+                }}
+                sx={{ cursor: "pointer", ...sx }}
+              />
+            </span>
           </>
         )}
       />

@@ -1,4 +1,4 @@
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 import { FieldErrors } from "react-hook-form";
 import { humanizeFieldName } from "@/utils/humanizeFieldName";
 

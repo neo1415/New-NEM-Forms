@@ -1,4 +1,4 @@
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 import { formatErrors, ErrorMessage } from "@/utils/formatErrors";
 import { Alert, AlertTitle, List, ListItem } from "@mui/material";
 import { useFormState } from "react-hook-form";

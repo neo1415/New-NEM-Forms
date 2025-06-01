@@ -1,5 +1,5 @@
 import { Menu } from "@/features/form/components/controllers/menu";
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 import ContrastOutlinedIcon from "@mui/icons-material/ContrastOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";

@@ -10,7 +10,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Options } from "@/features/confirm/types/options";
 import { Context } from "@/features/confirm/components/context";
-import { d } from "@/utils/dictionary";
+import { d } from "@/utils/motorDictionary/dictionary";
 
 type DialogProps = {
   open: boolean;
