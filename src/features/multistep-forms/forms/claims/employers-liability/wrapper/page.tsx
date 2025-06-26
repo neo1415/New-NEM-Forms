@@ -1,16 +1,15 @@
+import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
 import { Stepper } from "./components/stepper";
 import { SummaryDialog } from "./components/summary-dialog";
-import { Divider } from "@mui/material";
-import { Outlet } from "react-router";
 
 const Page = () => {
   return (
-    <>
-      <SummaryDialog />
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
       <Stepper />
-      <Divider sx={{ marginY: 2 }} />
       <Outlet />
-    </>
+      <SummaryDialog />
+    </Box>
   );
 };
 

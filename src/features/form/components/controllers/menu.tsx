@@ -23,6 +23,7 @@ type Option = {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   disabled?: boolean;
+  isOther?: boolean;
 };
 
 type MenuProps<T extends FieldValues> = Omit<
@@ -36,6 +37,7 @@ type MenuProps<T extends FieldValues> = Omit<
   className?: string;
   renderLabel?: (option: Option) => ReactNode;
   sx?: SxProps;
+  onOtherSelected?: () => void;
 };
 
 const Menu = forwardRef(
@@ -49,6 +51,7 @@ const Menu = forwardRef(
       sx,
       label,
       onChange,
+      onOtherSelected,
       ...props
     }: MenuProps<T>,
     ref: Ref<HTMLLIElement>
@@ -67,21 +70,20 @@ const Menu = forwardRef(
                 <MenuItem
                   key={option.value}
                   {...MenuItemProps}
-                  ref={ref}
-                  className={className}
                   selected={field.value === option.value}
                   disabled={option.disabled}
+                  onClick={() => {
+                    field.onChange(option.value);
+                    if (option.isOther) {
+                      onOtherSelected?.();
+                    }
+                    state.close();
+                  }}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     paddingX: 1,
                     ...sx,
-                  }}
-                  {...props}
-                  onClick={(event) => {
-                    field.onChange(option.value);
-                    onChange?.(event);
-                    state.close();
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>

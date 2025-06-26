@@ -1,6 +1,7 @@
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { useStore as useInsuredDetailsStore } from "../../insured-details/hooks/useStore";
 import { useStore as useDetailsOfLossStore } from "../../details-of-loss/hooks/useStore";
+import { useStore as useParticularsOfClaimantStore } from "../../particulars-of-claimant/hooks/useStore";
 import { useStore as useReviewStore } from "../../review/hooks/useStore";
 import { useCreate } from "../hooks/useMutations";
 import { useStore } from "../hooks/useStore";
@@ -22,6 +23,7 @@ import { d } from "@/utils/publicLiabilityDictionary/dictionary";
 import { Form } from "@/features/form/components/form";
 import { InsuredDetails } from "../../insured-details/page";
 import { DetailsOfLoss } from "../../details-of-loss/page";
+import { ParticularsOfClaimant } from "../../particulars-of-claimant/page";
 import { Review } from "../../review/page";
 
 const SummaryDialog = () => {
@@ -30,11 +32,14 @@ const SummaryDialog = () => {
 
   const { formData: insuredDetailsFormData } = useInsuredDetailsStore();
   const { formData: detailsOfLossFormData } = useDetailsOfLossStore();
+  const { formData: particularsOfClaimantFormData } =
+    useParticularsOfClaimantStore();
   const { formData: reviewFormData } = useReviewStore();
 
   const allFormData = {
     ...insuredDetailsFormData,
     ...detailsOfLossFormData,
+    ...particularsOfClaimantFormData,
     ...reviewFormData,
   };
 
@@ -72,6 +77,10 @@ const SummaryDialog = () => {
           <Divider />
           <Form schema={schema} values={allFormData} onSubmit={() => {}}>
             <DetailsOfLoss readOnly />
+          </Form>
+          <Divider />
+          <Form schema={schema} values={allFormData} onSubmit={() => {}}>
+            <ParticularsOfClaimant readOnly />
           </Form>
           <Divider />
           <Form schema={schema} values={allFormData} onSubmit={() => {}}>

@@ -5,15 +5,14 @@ import { useStore } from "./hooks/useStore";
 import Grid from "@mui/material/Grid2";
 import { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { Autocomplete } from "@/features/form/components/controllers/autocomplete";
 import { Schema, schema, defaultValues } from "./types/schema";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
-import { Menu } from "@/features/form/components/controllers/menu";
-import { TextArea } from "@/features/form/components/controllers/text-area";
 
 const Page = () => {
   return (
     <>
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 6 }}>
         <TextField<Schema>
           name="policyNumber"
           label="Policy Number"
@@ -33,15 +32,16 @@ const Page = () => {
       </Grid>
       <Grid size={{ xs: 12 }}>
         <TextField<Schema>
-          name="insuredName"
+          name="nameOfInsured"
           label="Name of Insured"
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <TextArea<Schema>
+        <TextField<Schema>
           name="address"
           label="Address"
-          rows={4}
+          multiline
+          maxRows={4}
         />
       </Grid>
       <Grid size={{ xs: 6 }}>
@@ -57,14 +57,16 @@ const Page = () => {
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <Menu<Schema>
+        <Autocomplete<Schema>
           name="alertPreference"
-          label="How would you prefer to receive your alert?"
           options={[
-            { value: "email", label: "Email" },
-            { value: "sms", label: "SMS" },
-            { value: "both", label: "Both" },
+            { label: "Email", value: "Email" },
+            { label: "SMS", value: "SMS" },
+            { label: "Both", value: "Both" },
           ]}
+          textFieldProps={{ 
+            label: "How would you prefer to receive claim updates?"
+          }}
         />
       </Grid>
     </>
@@ -77,30 +79,25 @@ type ProviderProps = {
 
 const Provider = ({ readOnly }: ProviderProps) => {
   const navigate = useNavigate();
-  const { formData, updateFormData, updateIsSubmitted } = useStore();
+  const { formData, updateFormData } = useStore();
 
   const handleSubmit: SubmitHandler<Schema> = (data) => {
     updateFormData(data);
     navigate("/claims/employers-liability/details-of-loss");
   };
 
-  const handleError = () => {
-    updateIsSubmitted(true);
-  };
-
   return (
     <Form
+      submitButtonText="Save and Continue"
+      slotProps={{
+        submitButtonProps: { startIcon: <ArrowForwardIosRoundedIcon /> },
+      }}
       schema={schema}
       values={formData}
       defaultValues={defaultValues}
       onSubmit={handleSubmit}
-      onError={handleError}
       readOnly={readOnly}
       title="Insured Details"
-      submitButtonText="Next"
-      slotProps={{
-        submitButtonProps: { startIcon: <ArrowForwardIosRoundedIcon /> },
-      }}
     >
       <Page />
     </Form>

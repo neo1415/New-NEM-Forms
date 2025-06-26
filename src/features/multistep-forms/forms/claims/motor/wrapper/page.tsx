@@ -1,7 +1,8 @@
-import { Stepper } from "@/features/multistep-forms/forms/claims/motor/wrapper/components/stepper";
+
 import { SummaryDialog } from "@/features/multistep-forms/forms/claims/motor/wrapper/components/summary-dialog";
 import { Divider } from "@mui/material";
 import { Outlet } from "react-router";
+import { Stepper } from "./components/stepper";
 
 const Page = () => {
   return (
@@ -14,4 +15,4 @@ const Page = () => {
   );
 };
 
-export { Page as EmployeeWrapper };
+export { Page as MotorWrapper };

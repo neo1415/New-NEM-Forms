@@ -57,7 +57,7 @@ const Stepper = () => {
 
   const steps = [
     {
-      href: "/employee/personal-info",
+      href: "/claims/motor/personal-info",
       label: d.personalInfo,
       success: motorPersonaInfoSuccess,
     },

@@ -182,3 +182,59 @@ All notable changes to this project will be documented in this file.
 - Yes/No questions with conditional explanations
 - Form validation using Zod
 - State management using Zustand 
+
+## KYC Forms Implementation Rules
+
+### Structure and Location
+- All KYC forms must be placed in the `/features/multistep-forms/forms/kyc` directory
+- Follow the exact structure and styling of motor claims forms as template
+- Do not create a new kyc directory, use existing one in multistep-forms
+
+### Form Components and Styling
+- DO NOT use the HTML/JSX structure from provided samples
+- Only extract the following from provided samples:
+  - Label names/text
+  - Field types (map to existing controller components)
+  - Required field status (marked by `<span className='required'>*</span>` in samples)
+- Use existing controller components from motor claims
+- Follow exact styling patterns from motor claims forms
+
+### Special Components Requirements
+1. Location Fields (Country/State/City):
+   - Create reusable component for all KYC forms
+   - Implement autocomplete functionality
+   - Allow manual entry if location not in database
+   - Progressive disclosure: State field appears after country selection, City after state
+   
+2. Phone Number Fields:
+   - Create custom component based on TextField template
+   - Include country code selection
+   - Update number format based on selected country
+   
+3. "Other" Option in Menus:
+   - When "Other" is selected, render new text input field
+   - Maintain consistent styling with other fields
+
+### Data Management
+- Create comprehensive location database with:
+  - Countries
+  - States/Provinces
+  - Cities
+- Store in appropriate format for autocomplete functionality
+- Allow fallback for missing locations
+
+### Validation
+- Required fields must be marked with asterisk (*)
+- Implement proper validation schemas
+- Use consistent error message styling
+- Follow motor claims validation patterns
+
+### Component Reusability
+- Location and phone components should be reusable across all KYC forms
+- Maintain consistent props interface
+- Document component usage
+
+### Updates and Maintenance
+- Document any new reusable components
+- Update this changelog when new patterns are established
+- Maintain consistency across all KYC forms 

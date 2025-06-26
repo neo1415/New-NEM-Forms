@@ -1,141 +1,71 @@
-import Grid from "@mui/material/Grid2";
-
-import { FormErrorSummary } from "@/features/form/components/form-error-summary";
-import { d } from "@/utils/motorDictionary/dictionary";
 import { zodResolver } from "@hookform/resolvers/zod";
-import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
-import {
-  Button,
-  ButtonProps,
-  IconButton,
-  IconButtonProps,
-  Typography,
-} from "@mui/material";
+import { Box, Button, ButtonProps, Stack, Typography } from "@mui/material";
 import { ReactNode } from "react";
 import {
-  DefaultValues,
-  FieldValues,
-  SubmitErrorHandler,
+  FormProvider,
   SubmitHandler,
   useForm,
   UseFormProps,
 } from "react-hook-form";
-import { ZodSchema } from "zod";
+import { z } from "zod";
 
-import { FormContext } from "@/features/form/types/formContext";
-import { FormProvider } from "react-hook-form";
-import { useConfirm } from "@/features/confirm/hooks/useContext";
-
-type FormProps<T extends FieldValues> = {
+interface Props<T extends z.ZodType<any, any>> {
   children: ReactNode;
-  schema: ZodSchema<T>;
-  title?: string;
-  onSubmit: SubmitHandler<T>;
-  onError?: SubmitErrorHandler<T>;
-  slotProps?: {
-    submitButtonProps?: ButtonProps;
-    resetButtonProps?: Partial<IconButtonProps>;
-    formContainerProps?: Partial<typeof Grid>;
-  };
-  showResetButton?: boolean;
-  mode?: UseFormProps<T>["mode"];
+  schema: T;
+  values?: z.infer<T>;
+  defaultValues?: UseFormProps<z.infer<T>>["defaultValues"];
+  onSubmit: SubmitHandler<z.infer<T>>;
   submitButtonText?: string;
-  values?: UseFormProps<T>["values"];
-  defaultValues?: DefaultValues<T>;
+  title?: string;
   readOnly?: boolean;
-};
+  slotProps?: {
+    submitButtonProps?: Partial<ButtonProps>;
+  };
+}
 
-const Form = <T extends FieldValues>({
+export const Form = <T extends z.ZodType<any, any>>({
   children,
   schema,
-  title,
-  onSubmit,
-  onError,
-  slotProps,
-  showResetButton = true,
-  mode = "all",
   values,
   defaultValues,
-  submitButtonText,
-  readOnly = false,
-}: FormProps<T>) => {
-  const confirm = useConfirm();
-
-  const form = useForm<T>({
-    mode,
-    values,
-    defaultValues,
+  onSubmit,
+  submitButtonText = "Submit",
+  title,
+  readOnly,
+  slotProps,
+}: Props<T>) => {
+  const methods = useForm<z.infer<T>>({
     resolver: zodResolver(schema),
+    defaultValues: values || defaultValues,
   });
 
-  const handleConfirm = () => {
-    form.reset(defaultValues);
-  };
-
-  const handleResetFormClick = async () => {
-    await confirm({
-      onConfirm: handleConfirm,
-    });
-  };
-
-  const extendedForm: FormContext<T> = {
-    ...form,
-    readOnly,
-  };
-
   return (
-    <FormProvider {...extendedForm}>
-      <Grid
-        container
-        spacing={2}
+    <FormProvider {...methods}>
+      <Box
         component="form"
-        onSubmit={form.handleSubmit(onSubmit, onError)}
-        {...slotProps?.formContainerProps}
+        onSubmit={methods.handleSubmit(onSubmit)}
+        noValidate
+        sx={{ width: "100%" }}
       >
-        {title && (
-          <Grid
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-            size={{ xs: 12 }}
-          >
-            <Typography variant="h6">{title}</Typography>
-            {showResetButton && !readOnly && (
-              <IconButton
-                onClick={handleResetFormClick}
-                color="inherit"
-                {...slotProps?.resetButtonProps}
-              >
-                <RestartAltOutlinedIcon />
-              </IconButton>
-            )}
-          </Grid>
-        )}
-
-        <Grid size={{ xs: 12 }}>
-          <FormErrorSummary />
-        </Grid>
-
-        {children}
-
-        {!readOnly && (
-          <Grid offset="auto">
+        <Stack spacing={4}>
+          {title && (
+            <Typography variant="h5" component="h1">
+              {title}
+            </Typography>
+          )}
+          {children}
+          {!readOnly && (
             <Button
               type="submit"
               variant="contained"
+              fullWidth
               {...slotProps?.submitButtonProps}
             >
-              {submitButtonText ??
-                slotProps?.submitButtonProps?.children ??
-                d.submit}
+              {submitButtonText}
             </Button>
-          </Grid>
-        )}
-      </Grid>
+          )}
+        </Stack>
+      </Box>
     </FormProvider>
   );
 };
-
-export { Form };

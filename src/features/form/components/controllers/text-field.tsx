@@ -22,7 +22,7 @@ type CustomNumberFormatProps = InputBaseComponentProps & {
   name: string;
 };
 
-type TextFieldProps<T extends FieldValues> = Omit<
+type TextFieldProps<T extends FieldValues = FieldValues> = Omit<
   MuiTextFieldProps,
   "name" | "error" | "helperText"
 > & {

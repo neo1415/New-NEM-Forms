@@ -1,78 +1,47 @@
-import { useFormContext } from "@/features/form/hooks/useFormContext";
-import { SxProps, Theme } from "@mui/material";
-import {
-  DatePicker as MuiDatePicker,
-  DatePickerProps as MuiDatePickerProps,
-} from "@mui/x-date-pickers";
-import { forwardRef, ReactElement, Ref } from "react";
-import { Controller, FieldValues, Path } from "react-hook-form";
+import { useController, Control, FieldValues, Path } from "react-hook-form";
+import { DatePicker as MuiDatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-type DatePickerProps<T extends FieldValues> = Omit<
-  MuiDatePickerProps<Date>,
-  "name" | "value" | "onChange"
-> & {
+interface Props<T extends FieldValues> {
   name: Path<T>;
-};
+  label: string;
+  minDate?: Date;
+  maxDate?: Date;
+  control?: Control<T>;
+}
 
-const DatePicker = forwardRef(
-  <T extends FieldValues>(
-    { name, sx, ...datePickerProps }: DatePickerProps<T>,
-    ref: Ref<HTMLDivElement>
-  ) => {
-    const { control, readOnly } = useFormContext<T>();
+export const DatePicker = <T extends FieldValues>({
+  name,
+  label,
+  minDate,
+  maxDate,
+  control,
+}: Props<T>) => {
+  const {
+    field: { onChange, value },
+    fieldState: { error },
+  } = useController({
+    name,
+    control,
+  });
 
-    const defaultSx: SxProps<Theme> = {
-      width: 1,
-      ...sx,
-    };
-
-    return (
-      <Controller
-        name={name}
-        control={control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          const isValidDate = (val: unknown): val is Date => {
-            return val instanceof Date && !isNaN(val.getTime());
-          };
-
-          const dateValue = isValidDate(value)
-            ? value
-            : value
-            ? new Date(value as string)
-            : null;
-
-          return (
-            <MuiDatePicker
-              {...datePickerProps}
-              value={dateValue}
-              onChange={(newValue) => {
-                const finalValue = isValidDate(newValue)
-                  ? newValue.toISOString()
-                  : newValue;
-                onChange(finalValue);
-              }}
-              ref={ref}
-              disableOpenPicker={readOnly}
-              sx={defaultSx}
-              readOnly={readOnly}
-              slotProps={{
-                ...datePickerProps.slotProps,
-                textField: {
-                  ...datePickerProps.slotProps?.textField,
-                  error: !!error,
-                  helperText: error?.message,
-                  name,
-                },
-              }}
-            />
-          );
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <MuiDatePicker
+        label={label}
+        value={value}
+        onChange={onChange}
+        minDate={minDate}
+        maxDate={maxDate}
+        slotProps={{
+          textField: {
+            fullWidth: true,
+            error: !!error,
+            helperText: error?.message,
+          },
         }}
       />
-    );
-  }
-) as <T extends FieldValues>(
-  props: DatePickerProps<T>,
-  ref: Ref<HTMLDivElement>
-) => ReactElement;
-
-export { DatePicker };
+    </LocalizationProvider>
+  );
+};

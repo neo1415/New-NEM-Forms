@@ -1,16 +1,27 @@
-import { create } from "zustand";
-import { Schema, defaultValues } from "../types/schema";
+import { defaultValues, Schema } from "../types/schema";
+import { createStore } from "@/utils/createStore";
 
-type Store = {
+type State = {
   formData: Schema;
-  updateFormData: (data: Schema) => void;
-  isSubmitted: boolean;
-  updateIsSubmitted: (value: boolean) => void;
 };
 
-export const useStore = create<Store>((set) => ({
-  formData: defaultValues,
-  updateFormData: (data) => set({ formData: data }),
-  isSubmitted: false,
-  updateIsSubmitted: (value) => set({ isSubmitted: value }),
-})); 
+type Actions = {
+  updateFormData: (data: State["formData"]) => void;
+};
+
+type Store = State & Actions;
+
+const useStore = createStore<Store>(
+  (set) => ({
+    formData: defaultValues,
+    updateFormData: (data) =>
+      set((state) => {
+        state.formData = data;
+      }),
+  }),
+  {
+    name: "employers-liability-insured-details-store",
+  }
+);
+
+export { useStore }; 
